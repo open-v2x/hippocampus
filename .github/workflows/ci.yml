@@ -44,8 +44,5 @@ jobs:
           port: ${{ secrets.MASTER_PORT }}
           script: |
             set -e
-            docker stop hippocampus || true"
-            docker rm hippocampus || true"
-            docker rmi openv2x/hippocampus:latest || true"
-            docker pull openv2x/hippocampus:latest"
-            nvidia-docker run -d --name=hippocampus --gpus all --net=host -v /home/v2x/projects/Object_Detection_and_Tracking/video:/home/hippocampus/video openv2x/hippocampus:latest
+            docker pull openv2x/hippocampus:latest
+            docker run -d --name=hippocampus --net=host openv2x/hippocampus:latest
