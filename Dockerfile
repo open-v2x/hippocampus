@@ -10,7 +10,8 @@ RUN cp /home/hippocampus/start.sh /usr/local/bin/start.sh \
     && apt-get update \
     && apt-get install -y wget curl ffmpeg \
     && /usr/local/bin/python -m pip install --upgrade pip \
-    && pip install -r /home/hippocampus/requirements.txt
+    && pip install -r /home/hippocampus/requirements.txt \
+    && rm -rf ~/.cache/pip
 
 
 CMD ["sh", "/usr/local/bin/start.sh"]
