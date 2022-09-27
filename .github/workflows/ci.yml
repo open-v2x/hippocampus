@@ -41,6 +41,7 @@ jobs:
           host: ${{ secrets.MASTER_HOST }}
           username: ${{ secrets.MASTER_USERNAME }}
           key: ${{ secrets.MASTER_PASSWORD }}
+          port: ${{ secrets.MASTER_PORT }}
           script: |
             set -e
             docker stop hippocampus || true"
