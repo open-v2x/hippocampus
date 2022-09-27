@@ -40,7 +40,7 @@ jobs:
         with:
           host: ${{ secrets.MASTER_HOST }}
           username: ${{ secrets.MASTER_USERNAME }}
-          key: ${{ secrets.MASTER_PASSWORD }}
+          key: ${{ secrets.MASTER_KEY }}
           port: ${{ secrets.MASTER_PORT }}
           script: |
             set -e
