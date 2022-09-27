@@ -20,7 +20,7 @@ class Detector(baseDet):
         self.device = select_device(self.device)
         model = attempt_load(self.weights, map_location=self.device)
         model.to(self.device).eval()
-        model.half()
+        model.half() if torch.cuda.is_available() else model.float()
         # torch.save(model, 'test.pt')
         self.m = model
         self.names = model.module.names if hasattr(
