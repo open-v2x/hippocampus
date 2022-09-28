@@ -38,11 +38,14 @@ jobs:
       - name: apply to v2x-lab environment
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.MASTER_HOST }}
-          username: ${{ secrets.MASTER_USERNAME }}
-          key: ${{ secrets.MASTER_KEY }}
-          port: ${{ secrets.MASTER_PORT }}
+          host: ${{ secrets.LAB_HOST }}
+          username: ${{ secrets.LAB_USERNAME }}
+          key: ${{ secrets.LAB_KEY }}
+          port: ${{ secrets.LAB_PORT }}
           script: |
             set -e
+            docker stop hippocampus || true
+            docker rm hippocampus || true
+            docker rmi openv2x/hippocampus:latest || true
             docker pull openv2x/hippocampus:latest
             docker run -d --name=hippocampus --net=host openv2x/hippocampus:latest
