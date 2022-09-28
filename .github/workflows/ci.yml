@@ -35,13 +35,13 @@ jobs:
     needs: docker
     runs-on: ubuntu-latest
     steps:
-      - name: apply to v2x-lab environment
+      - name: apply to cicd environment
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.LAB_HOST }}
-          username: ${{ secrets.LAB_USERNAME }}
-          key: ${{ secrets.LAB_KEY }}
-          port: ${{ secrets.LAB_PORT }}
+          host: ${{ secrets.MASTER_HOST }}
+          username: ${{ secrets.MASTER_USERNAME }}
+          key: ${{ secrets.MASTER_KEY }}
+          port: ${{ secrets.MASTER_PORT }}
           script: |
             set -e
             docker stop hippocampus || true
