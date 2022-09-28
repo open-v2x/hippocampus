@@ -48,4 +48,4 @@ jobs:
             docker rm hippocampus || true
             docker rmi openv2x/hippocampus:latest || true
             docker pull openv2x/hippocampus:latest
-            docker run -d --name=hippocampus --net=host openv2x/hippocampus:latest
+            docker run -d --name=hippocampus --net=host -v ~/test.mp4:/home/hippocampus/video/test.mp4 openv2x/hippocampus:latest

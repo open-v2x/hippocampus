@@ -7,6 +7,7 @@ COPY . /home/hippocampus/
 
 RUN cp /home/hippocampus/start.sh /usr/local/bin/start.sh \
     && mkdir -p /root/.config/Ultralytics/ \
+    && cp /home/hippocampus/Arial.ttf /root/.config/Ultralytics/ \
     && apt-get update \
     && apt-get install -y wget curl ffmpeg \
     && /usr/local/bin/python -m pip install --upgrade pip \
