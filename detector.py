@@ -33,7 +33,7 @@ class Detector(baseDet):
         img = img[:, :, ::-1].transpose(2, 0, 1)
         img = np.ascontiguousarray(img)
         img = torch.from_numpy(img).to(self.device)
-        img = img.half()  # 半精度
+        img = img.half() if torch.cuda.is_available() else img.float() # 半精度
         img /= 255.0  # 图像归一化
         if img.ndimension() == 3:
             img = img.unsqueeze(0)

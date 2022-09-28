@@ -33,73 +33,59 @@ def plot_bboxes(image, bboxes, line_thickness=None):
     return image
 
 
-# def update_tracker(target_detector, image):
 def update_tracker(target_detector, image):
+
+    new_faces = []
     _, bboxes = target_detector.detect(image)
+
     bbox_xywh = []
     confs = []
+    clss = []
+
+    for x1, y1, x2, y2, cls_id, conf in bboxes:
+
+        obj = [
+            int((x1+x2)/2), int((y1+y2)/2),
+            x2-x1, y2-y1
+        ]
+        bbox_xywh.append(obj)
+        confs.append(conf)
+        clss.append(cls_id)
+
+    xywhs = torch.Tensor(bbox_xywh)
+    confss = torch.Tensor(confs)
+
+    outputs = deepsort.update(xywhs, confss, clss, image)
+
     bboxes2draw = []
+    face_bboxes = []
+    current_ids = []
+    for value in list(outputs):
+        x1, y1, x2, y2, cls_, track_id = value
+        bboxes2draw.append(
+            (x1, y1, x2, y2, cls_, track_id)
+        )
+        current_ids.append(track_id)
+        if cls_ in ['car', 'truck', 'person']:
+            if not track_id in target_detector.faceTracker:
+                target_detector.faceTracker[track_id] = 0
+                face = image[y1:y2, x1:x2]
+                new_faces.append((face, track_id))
+            face_bboxes.append(
+                (x1, y1, x2, y2)
+            )
 
-    if len(bboxes) > 0:
-        for x1, y1, x2, y2, lbl, conf in bboxes:
-            obj = [
-                int((x1 + x2) * 0.5), int((y1 + y2) * 0.5),
-                x2 - x1, y2 - y1
-            ]
-            bbox_xywh.append(obj)
-            confs.append(conf)
+    ids2delete = []
+    for history_id in target_detector.faceTracker:
+        if not history_id in current_ids:
+            target_detector.faceTracker[history_id] -= 1
+        if target_detector.faceTracker[history_id] < -5:
+            ids2delete.append(history_id)
 
-        xywhs = torch.Tensor(bbox_xywh)
-        confss = torch.Tensor(confs)
+    for ids in ids2delete:
+        target_detector.faceTracker.pop(ids)
+        print('-[INFO] Delete track id:', ids)
 
-        outputs = deepsort.update(xywhs, confss, image)
+    image = plot_bboxes(image, bboxes2draw)
 
-        for x1, y1, x2, y2, track_id in list(outputs):
-            # x1, y1, x2, y2, track_id = value
-            center_x = (x1 + x2) * 0.5
-            center_y = (y1 + y2) * 0.5
-
-            label = search_label(center_x=center_x, center_y=center_y,
-                                 bboxes_xyxy=bboxes, max_dist_threshold=20.0)
-
-            bboxes2draw.append((x1, y1, x2, y2, label, track_id))
-
-    return bboxes2draw
-
-def search_label(center_x, center_y, bboxes_xyxy, max_dist_threshold):
-    """
-    在 bbox 中搜索中心点最接近的label
-    :param center_x:
-    :param center_y:
-    :param bboxes_xyxy:
-    :param max_dist_threshold:
-    :return: 字符串
-    """
-    label = ''
-    min_dist = -1.0
-
-    for x1, y1, x2, y2, lbl, conf in bboxes_xyxy:
-        center_x2 = (x1 + x2) * 0.5
-        center_y2 = (y1 + y2) * 0.5
-
-        # 横纵距离都小于 max_dist
-        min_x = abs(center_x2 - center_x)
-        min_y = abs(center_y2 - center_y)
-
-        if min_x < max_dist_threshold and min_y < max_dist_threshold:
-            # 距离阈值，判断是否在允许误差范围内
-            # 取 x, y 方向上的距离平均值
-            avg_dist = (min_x + min_y) * 0.5
-            if min_dist == -1.0:
-                # 第一次赋值
-                min_dist = avg_dist
-                # 赋值label
-                label = lbl
-            else:
-                # 若不是第一次，则距离小的优先
-                if avg_dist < min_dist:
-                    min_dist = avg_dist
-                    # label
-                    label = lbl
-
-    return label
+    return image, new_faces, face_bboxes
