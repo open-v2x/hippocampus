@@ -35,7 +35,7 @@ jobs:
     needs: docker
     runs-on: ubuntu-latest
     steps:
-      - name: apply to cicd environment
+      - name: apply to cicd environment & sync image to ACR
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.LAB_HOST }}
@@ -58,4 +58,5 @@ jobs:
             docker rmi openv2x/hippocampus:latest || true
             docker pull openv2x/hippocampus:latest
             nvidia-docker run -d --name=hippocampus --gpus all --net=host -v ~/Videos/test.mp4:/home/hippocampus/video/test.mp4 openv2x/hippocampus:latest
-
+            docker tag openv2x/hippocampus:latest registry.cn-shanghai.aliyuncs.com/openv2x/cerebrum:latest
+            docker push registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
