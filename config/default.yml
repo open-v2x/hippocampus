@@ -1,0 +1,17 @@
+R328328:
+  - camera_id: video/test.mp4
+    rtmp: rtmp://localhost:1935/live/rfBd56ti2SMtYvSgD5xAV0YU99zampta7Z7S575KLkIZ9PYk
+    http_flv: http://172.16.151.70:7001/live/test.flv
+  - camera_id: video/test1.mp4
+    rtmp: rtmp://localhost:1935/live/L17LTlsVqMNTZyLKMIFSD2x28MlgPJ0SDZVHnHJPxMKi0tWx
+    http_flv: http://172.16.151.70:7001/live/movie.flv
+R329329:
+  - camera_id: video/test.mp4
+    rtmp: rtmp://localhost:1935/live/u3pQJ71N5GWfOIGTdSWXbRLGAwD1IkzuZ5G1pEDzqqm3sncC
+    http_flv: http://172.16.151.70:7001/live/result.flv
+
+
+
+
+
+
