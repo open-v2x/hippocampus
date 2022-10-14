@@ -1,4 +1,5 @@
 from detector import Detector
+from utils.requests_utils import post
 import cv2
 import os
 import subprocess
@@ -6,6 +7,14 @@ import yaml
 import multiprocessing
 
 def func(camera):
+
+    # 创建livego channel,获得 channelkey
+    url = "http://localhost:8090/control/get?room="+camera.get("channel_name","")
+    channlkey = post(url)
+    if channlkey == "":
+        print("Did not get channelkey")
+        return
+
     while True:
         det = Detector()
         # cap = cv2.VideoCapture(os.getenv('rtsp') or 'videos/test.mp4')
@@ -13,7 +22,8 @@ def func(camera):
         size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
         sizeStr = str(size[0]) + 'x' + str(size[1])
         # rtmp = os.getenv('rtmp') or 'rtmp://localhost:1935/live/rfBd56ti2SMtYvSgD5xAV0YU99zampta7Z7S575KLkIZ9PYk'
-        rtmp = camera["rtmp"] or 'rtmp://localhost:1935/live/rfBd56ti2SMtYvSgD5xAV0YU99zampta7Z7S575KLkIZ9PYk'
+        rtmp="rtmp://localhost:1935/live/" + channlkey
+        rtmp = rtmp or 'rtmp://localhost:1935/live/rfBd56ti2SMtYvSgD5xAV0YU99zampta7Z7S575KLkIZ9PYk'
         command = ['ffmpeg',
                 '-y',
                 '-stream_loop', '-1',
@@ -70,9 +80,6 @@ def main():
         processes.append(p)
     for p in processes:
         p.join()
-
-
-
 
 
 if __name__ == '__main__':
