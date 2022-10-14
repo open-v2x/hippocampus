@@ -58,5 +58,6 @@ jobs:
             docker rmi openv2x/hippocampus:latest || true
             docker pull openv2x/hippocampus:latest
             nvidia-docker run -d --name=hippocampus --gpus all --net=host -v ~/Videos/test.mp4:/home/hippocampus/video/test.mp4 openv2x/hippocampus:latest
-            docker tag openv2x/hippocampus:latest registry.cn-shanghai.aliyuncs.com/openv2x/cerebrum:latest
+            docker tag openv2x/hippocampus:latest registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
             docker push registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
+       
