@@ -84,7 +84,7 @@ def update_tracker(target_detector, image):
 
     for ids in ids2delete:
         target_detector.faceTracker.pop(ids)
-        print('-[INFO] Delete track id:', ids)
+        # print('-[INFO] Delete track id:', ids)
 
     image = plot_bboxes(image, bboxes2draw)
 

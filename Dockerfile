@@ -1,6 +1,6 @@
 FROM docker.io/library/python:3.9.12-slim-buster
 
-LABEL purpose="cerebrum"
+LABEL purpose="hippocampus"
 
 WORKDIR /home/hippocampus
 COPY . /home/hippocampus/
