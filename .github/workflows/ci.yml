@@ -61,14 +61,21 @@ jobs:
               docker run -v ~/Videos/test.mp4:/test.mp4 --rm -p 8554:8554 -d --name=gst-rtsp-launch steabert/gst-rtsp-launch "filesrc location=/test.mp4 ! decodebin ! x264enc ! rtph264pay name=pay0 pt=96"
             fi
 
-            docker stop hippocampus-328 hippocampus-329|| true
-            docker rm hippocampus-328 hippocampus-329 || true
-            docker rmi openv2x/hippocampus:latest || true
+            containerName2=hippocampus-328
+            containerName3=hippocampus-329
+
+            if [[ -n $(docker ps -q -f "name=^${containerName2}$") ]];then
+              docker stop hippocampus-328|| true
+            
+            if [[ -n $(docker ps -q -f "name=^${containerName3}$") ]];then
+              docker stop hippocampus-329|| true
+
+            if [[ -n $(docker images --filter=reference='openv2x/hippocampus:latest' -q) ]];then
+              docker rmi openv2x/hippocampus:latest || true
+              
             docker pull openv2x/hippocampus:latest
-            nvidia-docker run -d --env "RSU=R328328" --name=hippocampus-328 --gpus all --net=host -v ~/Videos/test.mp4:/home/hippocampus/video/test.mp4 -v ~/Videos/test1.mp4:/home/hippocampus/video/test1.mp4 openv2x/hippocampus:latest
-            nvidia-docker run -d --env "RSU=R329329" --name=hippocampus-329 --gpus all --net=host -v ~/Videos/test.mp4:/home/hippocampus/video/test.mp4 -v ~/Videos/test1.mp4:/home/hippocampus/video/test1.mp4 openv2x/hippocampus:latest
-            docker tag openv2x/hippocampus:latest registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
-            docker push registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
+            nvidia-docker run -d --env "RSU=R328328" --name=hippocampus-328 --gpus all --net=host -v ~/Videos/test.mp4:/home/hippocampus/video/test.mp4 -v ~/Videos/test1.mp4:/home/hippocampus/video/test1.mp4 --rm openv2x/hippocampus:latest
+            nvidia-docker run -d --env "RSU=R329329" --name=hippocampus-329 --gpus all --net=host -v ~/Videos/test.mp4:/home/hippocampus/video/test.mp4 -v ~/Videos/test1.mp4:/home/hippocampus/video/test1.mp4 --rm openv2x/hippocampus:latest
        
   acr:
       needs: docker
