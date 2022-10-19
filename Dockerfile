@@ -4,7 +4,7 @@ ARG OS_VERSION=18.04
 FROM nvidia/cuda:${CUDA_VERSION}-cudnn8-devel-ubuntu${OS_VERSION}
 LABEL maintainer="NVIDIA CORPORATION"
 
-ENV TRT_VERSION 8.4.3.1
+ENV TRT_VERSION 8.2.0.6
 SHELL ["/bin/bash", "-c"]
 
 WORKDIR /workspace
