@@ -58,7 +58,7 @@ jobs:
             if [[ -n $(docker ps -q -f "name=^${containerName1}$") ]];then
               echo "container already exist"
             else
-              docker run -v ~/Videos/test.mp4:/test.mp4 --rm -it -p 8554:8554 --name=gst-rtsp-launch steabert/gst-rtsp-launch "filesrc location=/test.mp4 ! decodebin ! x264enc ! rtph264pay name=pay0 pt=96"
+              docker run -v ~/Videos/test.mp4:/test.mp4 --rm -p 8554:8554 --name=gst-rtsp-launch steabert/gst-rtsp-launch "filesrc location=/test.mp4 ! decodebin ! x264enc ! rtph264pay name=pay0 pt=96"
             fi
 
             docker stop hippocampus-328 hippocampus-329|| true
