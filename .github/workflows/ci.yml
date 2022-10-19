@@ -53,8 +53,8 @@ jobs:
               docker run -p 1935:1935 -p 7001:7001 -p 7002:7002 -p 8090:8090 -d --name=livego gwuhaolin/livego
             fi
 
-            docker stop hippocampus || true
-            docker rm hippocampus || true
+            docker stop hippocampus-328 hippocampus-329|| true
+            docker rm hippocampus-328 hippocampus-329 || true
             docker rmi openv2x/hippocampus:latest || true
             docker pull openv2x/hippocampus:latest
             nvidia-docker run -d --env "RSU=R328328" --name=hippocampus-328 --gpus all --net=host -v ~/Videos/test.mp4:/home/hippocampus/video/test.mp4 -v ~/Videos/test1.mp4:/home/hippocampus/video/test1.mp4 openv2x/hippocampus:latest
