@@ -45,7 +45,7 @@ RUN cp /workspace/start.sh /usr/local/bin/start.sh \
     wget \
     curl \
     vim \
-    ffmepg \
+    ffmpeg \
     procps
 
 # Install python3
