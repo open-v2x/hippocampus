@@ -41,7 +41,7 @@ def func(camera):
             ret, im = cap.read()
             if not ret:
                 break
-            im = cv2.resize(im_rgb, (720, 480), interpolation=cv2.INTER_LINEAR)
+            im = cv2.resize(im, (720, 480), interpolation=cv2.INTER_LINEAR)
             result = det.feedCap(im)
             result = result['frame']
             pipe.stdin.write(result.tobytes())
