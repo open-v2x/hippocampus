@@ -1,8 +1,8 @@
 R328328:
   - camera_id: video/test.mp4
     channel_name: test
-  - camera_id: video/test1.mp4
+  - camera_id: rtsp://172.16.150.31:8554/test
     channel_name: movie
 R329329:
-  - camera_id: video/test.mp4
+  - camera_id: rtsp://172.16.150.31:8554/test
     channel_name: result
