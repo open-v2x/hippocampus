@@ -67,6 +67,7 @@ RUN v="${TRT_VERSION%.*}-1+cuda${CUDA_VERSION%.*}" &&\
         python3-libnvinfer=${v}
 
 RUN pip3 install --upgrade pip \
+    && pip3 install setuptools>=41.0.0 \
     && pip3 install -r /workspace/requirements.txt \
     && rm -rf ~/.cache/pip
 
