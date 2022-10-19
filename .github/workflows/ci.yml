@@ -45,8 +45,7 @@ jobs:
           script: |
             set -e
 
-            containerName="livego"
-            containerName1="gst-rtsp-launch"
+            containerName="livego" 
 
             if [[ -n $(docker ps -q -f "name=^${containerName}$") ]];then
               echo "container already exist"
@@ -54,12 +53,12 @@ jobs:
               docker run -p 1935:1935 -p 7001:7001 -p 7002:7002 -p 8090:8090 -d --name=livego gwuhaolin/livego
             fi
 
-            sudo apt install libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio
+            containerName1="gst-rtsp-launch"
 
             if [[ -n $(docker ps -q -f "name=^${containerName1}$") ]];then
               echo "container already exist"
             else
-              docker run --restart=on-failure -v ~/Videos/test.mp4:/test.mp4 -it -p 8554:8554 --name=gst-rtsp-launch steabert/gst-rtsp-launch "filesrc location=/test.mp4 ! decodebin ! x264enc ! rtph264pay name=pay0 pt=96"
+              docker run -v ~/Videos/test.mp4:/test.mp4 --rm -it -p 8554:8554 --name=gst-rtsp-launch steabert/gst-rtsp-launch "filesrc location=/test.mp4 ! decodebin ! x264enc ! rtph264pay name=pay0 pt=96"
             fi
 
             docker stop hippocampus-328 hippocampus-329|| true
