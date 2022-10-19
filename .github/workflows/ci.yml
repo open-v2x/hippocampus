@@ -59,7 +59,7 @@ jobs:
             if [[ -n $(docker ps -q -f "name=^${containerName1}$") ]];then
               echo "container already exist"
             else
-              docker run -v ~/Videos/test.mp4:/test.mp4 --rm -it -p 8554:8554 --name=gst-rtsp-launch steabert/gst-rtsp-launch "filesrc location=/test.mp4 ! decodebin ! x264enc ! rtph264pay name=pay0 pt=96"
+              docker run --restart=on-failure -v ~/Videos/test.mp4:/test.mp4 -it -p 8554:8554 --name=gst-rtsp-launch steabert/gst-rtsp-launch "filesrc location=/test.mp4 ! decodebin ! x264enc ! rtph264pay name=pay0 pt=96"
             fi
 
             docker stop hippocampus-328 hippocampus-329|| true
@@ -71,18 +71,18 @@ jobs:
             docker tag openv2x/hippocampus:latest registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
             docker push registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
        
-acr:
-    needs: docker
-    runs-on: ubuntu-latest
-    steps:
-      - name: sync image to ACR
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.AIO_MASTER_HOST }}
-          username: ${{ secrets.AIO_MASTER_USERNAME }}
-          key: ${{ secrets.AIO_MASTER_KEY }}
-          port: ${{ secrets.AIO_MASTER_PORT }}
-          script: |
-            docker pull openv2x/hippocampus:latest
-            docker tag openv2x/hippocampus:latest registry.cn-shanghai.aliyuncs.com/openv2x/cerebrum:latest
-            docker push registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
+  acr:
+      needs: docker
+      runs-on: ubuntu-latest
+      steps:
+        - name: sync image to ACR
+          uses: appleboy/ssh-action@master
+          with:
+            host: ${{ secrets.AIO_MASTER_HOST }}
+            username: ${{ secrets.AIO_MASTER_USERNAME }}
+            key: ${{ secrets.AIO_MASTER_KEY }}
+            port: ${{ secrets.AIO_MASTER_PORT }}
+            script: |
+              docker pull openv2x/hippocampus:latest
+              docker tag openv2x/hippocampus:latest registry.cn-shanghai.aliyuncs.com/openv2x/cerebrum:latest
+              docker push registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
