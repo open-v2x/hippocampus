@@ -20,6 +20,7 @@ def func(camera):
         cap = cv2.VideoCapture(os.getenv('rtsp') or camera["camera_id"])
         size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
         sizeStr = str(size[0]) + 'x' + str(size[1])
+        fps = int(cap.get(cv2.CAP_PROP_FPS))
         rtmp="rtmp://localhost:1935/live/" + channlkey
         command = ['ffmpeg',
                 '-y',
@@ -27,8 +28,8 @@ def func(camera):
                 '-f', 'rawvideo',
                 '-vcodec', 'rawvideo',
                 '-pix_fmt', 'bgr24',
-                '-s', '720x480',
-                '-r', '25',
+                '-s', sizeStr,
+                '-r', fps,
                 '-i', '-',
                 '-c:v', 'libx264',
                 '-pix_fmt', 'yuv420p',
@@ -41,7 +42,6 @@ def func(camera):
             ret, im = cap.read()
             if not ret:
                 break
-            im = cv2.resize(im, (720, 480), interpolation=cv2.INTER_LINEAR)
             result = det.feedCap(im)
             result = result['frame']
             pipe.stdin.write(result.tobytes())
