@@ -66,7 +66,13 @@ jobs:
 
             if [[ -n $(docker ps -q -f "name=^${containerName2}$") ]];then
               docker stop hippocampus-328|| true
-            else:
+            else
+              echo "hippocampus-328 has stopped"
+            fi
+
+            if [[ -n $(docker ps -a -q -f "name=^${containerName2}$") ]];then
+              docker rm hippocampus-328|| true
+            else
               echo "hippocampus-328 do not exist"
             fi
 
@@ -74,20 +80,26 @@ jobs:
 
             if [[ -n $(docker ps -q -f "name=^${containerName3}$") ]];then
               docker stop hippocampus-329|| true
-            else:
+            else
+              echo "hippocampus-329 has stopped"
+            fi
+
+            if [[ -n $(docker ps -a -q -f "name=^${containerName3}$") ]];then
+              docker rm hippocampus-329|| true
+            else
               echo "hippocampus-329 do not exist"
             fi
 
             if [[ -n $(docker images --filter=reference='openv2x/hippocampus:latest' -q) ]];then
               docker rmi openv2x/hippocampus:latest || true
-            else:
+            else
               echo "openv2x/hippocampus:latest do not exist"
             fi
 
             docker pull openv2x/hippocampus:latest
             nvidia-docker run -d --env "RSU=R328328" --name=hippocampus-328 --gpus all --net=host -v ~/Videos/test.mp4:/home/hippocampus/video/test.mp4 -v ~/Videos/test1.mp4:/home/hippocampus/video/test1.mp4 --rm openv2x/hippocampus:latest
             nvidia-docker run -d --env "RSU=R329329" --name=hippocampus-329 --gpus all --net=host -v ~/Videos/test.mp4:/home/hippocampus/video/test.mp4 -v ~/Videos/test1.mp4:/home/hippocampus/video/test1.mp4 --rm openv2x/hippocampus:latest
-  
+
   acr:
       needs: docker
       runs-on: ubuntu-latest
