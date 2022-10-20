@@ -31,6 +31,7 @@ jobs:
             GIT_BRANCH=${{ github.ref_name }}
             REPO_URL=https://github.com/open-v2x/hippocampus
             GIT_COMMIT=${{ github.sha }}
+
   ssh:
     needs: docker
     runs-on: ubuntu-latest
@@ -76,7 +77,7 @@ jobs:
             docker pull openv2x/hippocampus:latest
             nvidia-docker run -d --env "RSU=R328328" --name=hippocampus-328 --gpus all --net=host -v ~/Videos/test.mp4:/home/hippocampus/video/test.mp4 -v ~/Videos/test1.mp4:/home/hippocampus/video/test1.mp4 --rm openv2x/hippocampus:latest
             nvidia-docker run -d --env "RSU=R329329" --name=hippocampus-329 --gpus all --net=host -v ~/Videos/test.mp4:/home/hippocampus/video/test.mp4 -v ~/Videos/test1.mp4:/home/hippocampus/video/test1.mp4 --rm openv2x/hippocampus:latest
-       
+  
   acr:
       needs: docker
       runs-on: ubuntu-latest
