@@ -25,7 +25,7 @@ class Detector(baseDet):
 
     def init_model(self):
 
-        self.weights = 'weights/yolov5s.engine'
+        self.weights = 'weights/yolov5s.pt'
         self.device = '0' if torch.cuda.is_available() else 'cpu'
         self.imgsz = [640, 640]
         self.half = False
