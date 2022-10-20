@@ -36,7 +36,7 @@ jobs:
     needs: docker
     runs-on: ubuntu-latest
     steps:
-      - name: apply to cicd environment & sync image to ACR
+      - name: apply to cicd environment
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.LAB_HOST }}
