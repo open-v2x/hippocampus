@@ -20,7 +20,7 @@ def func(camera):
         cap = cv2.VideoCapture(os.getenv('rtsp') or camera["camera_id"])
         size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
         sizeStr = str(size[0]) + 'x' + str(size[1])
-        fps = int(cap.get(cv2.CAP_PROP_FPS))
+        fps = str(cap.get(cv2.CAP_PROP_FPS))
         rtmp="rtmp://localhost:1935/live/" + channlkey
         command = ['ffmpeg',
                 '-y',
