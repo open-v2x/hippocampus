@@ -28,7 +28,7 @@ def func(camera):
                 '-f', 'rawvideo',
                 '-vcodec', 'rawvideo',
                 '-pix_fmt', 'bgr24',
-                '-s', sizeStr,
+                '-s', '720x480',
                 '-r', fps,
                 '-i', '-',
                 '-c:v', 'libx264',
@@ -42,6 +42,7 @@ def func(camera):
             ret, im = cap.read()
             if not ret:
                 break
+            im = cv2.resize(im, (720, 480), interpolation=cv2.INTER_LINEAR)
             result = det.feedCap(im)
             result = result['frame']
             pipe.stdin.write(result.tobytes())
