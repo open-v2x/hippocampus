@@ -17,7 +17,7 @@ def func(camera):
 
     while True:
         det = Detector()
-        cap = cv2.VideoCapture(os.getenv('rtsp') or camera["camera_id"])
+        cap = cv2.VideoCapture(os.getenv('rtsp') or camera["rtsp"])
         size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
         sizeStr = str(size[0]) + 'x' + str(size[1])
         fps = str(cap.get(cv2.CAP_PROP_FPS))
