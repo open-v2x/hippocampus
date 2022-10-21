@@ -1,8 +1,11 @@
 R328328:
-  - camera_id: video/test.flv
+  - camera_id: 1
+    rtsp: video/test.flv
     channel_name: test
-  - camera_id: rtsp://127.0.0.1:8554/test
+  - camera_id: 2
+    rtsp: rtsp://127.0.0.1:8554/test
     channel_name: movie
 R329329:
-  - camera_id: rtsp://127.0.0.1:8554/test
+  - camera_id: 3
+    rtsp: rtsp://127.0.0.1:8554/test
     channel_name: result
