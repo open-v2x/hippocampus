@@ -1,10 +1,12 @@
 from detector import Detector
 from utils.requests_utils import post
+from tracker import plot_bboxes
 import cv2
 import os
 import subprocess
 import yaml
 import multiprocessing
+
 
 def func(camera):
 
@@ -38,14 +40,28 @@ def func(camera):
                 rtmp]
         pipe = subprocess.Popen(command, stdin=subprocess.PIPE)
 
+        i = 1
+        count = 5
+        bboxes = []
         while True:
             ret, im = cap.read()
             if not ret:
                 break
             im = cv2.resize(im, (720, 480), interpolation=cv2.INTER_LINEAR)
-            result = det.feedCap(im)
-            result = result['frame']
-            pipe.stdin.write(result.tobytes())
+            if i == 0:
+                bboxes.clear()
+                result = det.feedCap(im)
+                frame = result['frame']
+                if result['bboxes2draw']:
+                    bboxes.append(result['bboxes2draw'])
+            else:
+                if bboxes: 
+                    frame = plot_bboxes(im, bboxes[0])
+                else:
+                    frame = im
+            pipe.stdin.write(frame.tobytes())
+            i = i + 1
+            i = i % count
 
         cap.release()
 
