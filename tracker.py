@@ -88,4 +88,4 @@ def update_tracker(target_detector, image):
 
     image = plot_bboxes(image, bboxes2draw)
 
-    return image, new_faces, face_bboxes
+    return image, new_faces, face_bboxes, bboxes2draw
