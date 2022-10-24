@@ -57,9 +57,25 @@ jobs:
             containerName1="gst-rtsp-launch"
 
             if [[ -n $(docker ps -q -f "name=^${containerName1}$") ]];then
-              echo "container already exist"
+              echo "gst-rtsp-launch already exist"
             else
               docker run -v ~/Videos/test.flv:/test.flv --rm -p 8554:8554 -d --name=gst-rtsp-launch steabert/gst-rtsp-launch "filesrc location=/test.flv ! decodebin ! x264enc ! rtph264pay name=pay0 pt=96"
+            fi
+
+            containerName328="gst-rtsp-launch-328"
+
+            if [[ -n $(docker ps -q -f "name=^${containerName328}$") ]];then
+              echo "gst-rtsp-launch-328 already exist"
+            else
+              docker run -v ~/Videos/traffic_2.flv:/traffic_2.flv --rm -p 8553:8554 -d --name=gst-rtsp-launch-328 steabert/gst-rtsp-launch "filesrc location=/traffic_2.flv ! decodebin ! x264enc ! rtph264pay name=pay0 pt=96"
+            fi
+
+            containerName329="gst-rtsp-launch-329"
+
+            if [[ -n $(docker ps -q -f "name=^${containerName329}$") ]];then
+              echo "gst-rtsp-launch-329 already exist"
+            else
+              docker run -v ~/Videos/test1.flv:/test1.flv --rm -p 8552:8554 -d --name=gst-rtsp-launch-329 steabert/gst-rtsp-launch "filesrc location=/test1.flv ! decodebin ! x264enc ! rtph264pay name=pay0 pt=96"
             fi
 
             containerName2=hippocampus-328

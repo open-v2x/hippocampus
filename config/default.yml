@@ -3,9 +3,13 @@ R328328:
     rtsp: rtsp://127.0.0.1:8554/test
     channel_name: test
   - camera_id: 2
-    rtsp: rtsp://127.0.0.1:8554/test
+    rtsp: rtsp://127.0.0.1:8553/test
     channel_name: movie
 R329329:
   - camera_id: 3
-    rtsp: rtsp://127.0.0.1:8554/test
+    rtsp: rtsp://127.0.0.1:8552/test
     channel_name: result
+R327327:
+  - camera_id: 4
+    rtsp: rtsp://127.0.0.1:8554/test
+    channel_name: camera
