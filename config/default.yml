@@ -1,6 +1,6 @@
 R328328:
   - camera_id: 1
-    rtsp: video/test.flv
+    rtsp: rtsp://127.0.0.1:8554/test
     channel_name: test
   - camera_id: 2
     rtsp: rtsp://127.0.0.1:8554/test
