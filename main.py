@@ -17,53 +17,52 @@ def func(camera):
         print("Did not get channelkey")
         return
 
+    det = Detector()
+    cap = cv2.VideoCapture(os.getenv('rtsp') or camera["rtsp"])
+    size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+    sizeStr = str(size[0]) + 'x' + str(size[1])
+    fps = str(cap.get(cv2.CAP_PROP_FPS))
+    rtmp="rtmp://localhost:1935/live/" + channlkey
+    command = ['ffmpeg',
+            '-y',
+            '-stream_loop', '-1',
+            '-f', 'rawvideo',
+            '-vcodec', 'rawvideo',
+            '-pix_fmt', 'bgr24',
+            '-s', '720x480',
+            '-r', fps,
+            '-i', '-',
+            '-c:v', 'libx264',
+            '-pix_fmt', 'yuv420p',
+            '-preset', 'ultrafast',
+            '-f', 'flv',
+            rtmp]
+    pipe = subprocess.Popen(command, stdin=subprocess.PIPE)
+
+    i = 1
+    count = 5
+    bboxes = []
     while True:
-        det = Detector()
-        cap = cv2.VideoCapture(os.getenv('rtsp') or camera["rtsp"])
-        size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-        sizeStr = str(size[0]) + 'x' + str(size[1])
-        fps = str(cap.get(cv2.CAP_PROP_FPS))
-        rtmp="rtmp://localhost:1935/live/" + channlkey
-        command = ['ffmpeg',
-                '-y',
-                '-stream_loop', '-1',
-                '-f', 'rawvideo',
-                '-vcodec', 'rawvideo',
-                '-pix_fmt', 'bgr24',
-                '-s', '720x480',
-                '-r', fps,
-                '-i', '-',
-                '-c:v', 'libx264',
-                '-pix_fmt', 'yuv420p',
-                '-preset', 'ultrafast',
-                '-f', 'flv',
-                rtmp]
-        pipe = subprocess.Popen(command, stdin=subprocess.PIPE)
-
-        i = 1
-        count = 5
-        bboxes = []
-        while True:
-            ret, im = cap.read()
-            if not ret:
-                break
-            im = cv2.resize(im, (720, 480), interpolation=cv2.INTER_LINEAR)
-            if i == 0:
-                bboxes.clear()
-                result = det.feedCap(im)
-                frame = result['frame']
-                if result['bboxes2draw']:
-                    bboxes.append(result['bboxes2draw'])
+        ret, im = cap.read()
+        if not ret:
+            break
+        im = cv2.resize(im, (720, 480), interpolation=cv2.INTER_LINEAR)
+        if i == 0:
+            bboxes.clear()
+            result = det.feedCap(im)
+            frame = result['frame']
+            if result['bboxes2draw']:
+                bboxes.append(result['bboxes2draw'])
+        else:
+            if bboxes: 
+                frame = plot_bboxes(im, bboxes[0])
             else:
-                if bboxes: 
-                    frame = plot_bboxes(im, bboxes[0])
-                else:
-                    frame = im
-            pipe.stdin.write(frame.tobytes())
-            i = i + 1
-            i = i % count
+                frame = im
+        pipe.stdin.write(frame.tobytes())
+        i = i + 1
+        i = i % count
 
-        cap.release()
+    cap.release()
 
 
 def main():
