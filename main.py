@@ -10,26 +10,19 @@ import multiprocessing
 
 def func(camera):
 
-    # 创建livego channel,获得 channelkey
-    url = "http://localhost:8090/control/get?room="+camera.get("channel_name","")
-    channlkey = post(url)
-    if channlkey == "":
-        print("Did not get channelkey")
-        return
-
     det = Detector()
     cap = cv2.VideoCapture(os.getenv('rtsp') or camera["rtsp"])
     size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
     sizeStr = str(size[0]) + 'x' + str(size[1])
     fps = str(cap.get(cv2.CAP_PROP_FPS))
-    rtmp="rtmp://localhost:1935/live/" + channlkey
+    rtmp="rtmp://localhost:1935/live/" + camera.get("camera_id")
     command = ['ffmpeg',
             '-y',
             '-stream_loop', '-1',
             '-f', 'rawvideo',
             '-vcodec', 'rawvideo',
             '-pix_fmt', 'bgr24',
-            '-s', '720x480',
+            '-s', sizeStr,
             '-r', fps,
             '-i', '-',
             '-c:v', 'libx264',
@@ -40,13 +33,12 @@ def func(camera):
     pipe = subprocess.Popen(command, stdin=subprocess.PIPE)
 
     i = 1
-    count = 5
+    count = 3
     bboxes = []
     while True:
         ret, im = cap.read()
         if not ret:
             break
-        im = cv2.resize(im, (720, 480), interpolation=cv2.INTER_LINEAR)
         if i == 0:
             bboxes.clear()
             result = det.feedCap(im)

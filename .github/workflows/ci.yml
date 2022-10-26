@@ -46,13 +46,8 @@ jobs:
           script: |
             set -e
 
-            containerName="livego" 
-
-            if [[ -n $(docker ps -q -f "name=^${containerName}$") ]];then
-              echo "container already exist"
-            else
-              docker run -p 1935:1935 -p 7001:7001 -p 7002:7002 -p 8090:8090 -d --name=livego gwuhaolin/livego
-            fi
+            docker rm -f lalserver || true
+            docker run -it -p 1935:1935 -p 8088:8080 --name=lalserver q191201771/lal /lal/bin/lalserver -c /lal/conf/lalserver.conf.json
 
             containerName1="gst-rtsp-launch"
 
