@@ -11,7 +11,7 @@
 - [hippocampus入门开发文档](#hippocampus-入门开发文档)
   - [1、开发环境及工具](#开发环境及工具)
   - [2、hippocampus 部署](#hippocampus-部署)
-  - [3、调试](#调试)
+  - [3、本地调试](#本地调试)
 
 <!-- code_chunk_output -->
 
@@ -27,7 +27,7 @@ sudo ubuntu-drivers autoinstall
 reboot
 ```
 
-```bash
+```console
 root@t4-lab:~# nvidia-smi
 Wed Oct 12 17:55:51 2022       
 +-----------------------------------------------------------------------------+
@@ -84,7 +84,7 @@ sudo systemctl restart docker
 
 1.5. 测试 docker 可以使用 GPU
 
-```bash
+```console
 root@t4-lab:~# docker run nvcr.io/nvidia/k8s/cuda-sample:vectoradd-cuda10.2
 Unable to find image 'nvcr.io/nvidia/k8s/cuda-sample:vectoradd-cuda10.2' locally
 vectoradd-cuda10.2: Pulling from nvidia/k8s/cuda-sample
@@ -108,12 +108,13 @@ Done
 
 ## 2、 hippocampus 部署
 
-1. 参考 <https://github.com/open-v2x/hippocampus>
+1. hippocampus 开发环境准备
 
 ```bash
+# ffmpeg 推流工具安装
 apt install ffmpeg -y
-docker run -p 1935:1935 -p 7001:7001 -p 7002:7002 -p 8090:8090 -d gwuhaolin/livego
-curl http://localhost:8090/control/get?room=result
+# docker 启动livego
+docker run -it -p 1935:1935 -p 8088:8080 --name=lalserver q191201771/lal /lal/bin/lalserver -c /lal/conf/lalserver.conf.json
 ```
 
 2. 参考 <https://blog.51cto.com/ganzy/5636414>，现在 hippocampus 用 pytorch < 1.10 版本，python 必须 < 3.10
@@ -126,6 +127,7 @@ sudo apt install python3.8 -y
 git clone https://github.com/open-v2x/hippocampus.git
 cd hippocampus
 
+# 创建 python 虚拟环境
 python3 -m virtualenv -p python3.8 .venv
 
 # 或者，可选
@@ -139,25 +141,26 @@ python3 -m virtualenv -p python3.8 .venv
 3. hipppcampus 运行
 
 ```bash
+# 进入 python 虚拟环境
 . .venv/bin/activate
+# 安装依赖
 pip install -r requirements.txt
-export rtsp=/root/test.mp4
-
+# 启动服务
 python main.py
 ```
 
-## 3、调试
+## 3、本地调试
 
 1. ffmpeg 推流调试
 
 参考 <https://zhc3o5gmf9.feishu.cn/docx/doxcnNrfygF4WnWVYhCygILsuqd>
 
 ```bash
-ffmpeg -re -stream_loop -1 -i /root/test.mp4 -r 25 -c:v libx264 -s 480x270 -f flv rtmp://localhost:1935/live/rfBd56ti2SMtYvSgD5xAV0YU99zampta7Z7S575KLkIZ9PYk
+ffmpeg -re -stream_loop -1 -i /root/test.mp4 -r 25 -c:v libx264 -s 480x270 -f flv rtmp://localhost:1935/live/cam_3
 ```
 
 vlc 可以访问 <rtmp://localhost:1935/live/result>
 
 2. hippocampus 算法处理 test.mp4 文件并进行推流调试
 
-hippocampus 运行时，vlc 访问 <http://localhost:7001/live/result.flv>
+hippocampus 运行起来，vlc或者网页 访问 <http://localhost:8088/live/result.flv>
