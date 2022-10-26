@@ -1,15 +1,11 @@
 R328328:
-  - camera_id: 1
+  - camera_id: 'cam_1'
     rtsp: rtsp://127.0.0.1:8554/test
-    channel_name: test
-  - camera_id: 2
+  - camera_id: 'cam_2'
     rtsp: rtsp://127.0.0.1:8553/test
-    channel_name: movie
 R329329:
-  - camera_id: 3
+  - camera_id: 'cam_3'
     rtsp: rtsp://127.0.0.1:8552/test
-    channel_name: result
 R327327:
-  - camera_id: 4
+  - camera_id: 'cam_4'
     rtsp: rtsp://127.0.0.1:8554/test
-    channel_name: camera
