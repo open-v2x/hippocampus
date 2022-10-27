@@ -163,4 +163,4 @@ vlc 可以访问 <rtmp://localhost:1935/live/result>
 
 2. hippocampus 算法处理 test.mp4 文件并进行推流调试
 
-hippocampus 运行起来，vlc或者网页 访问 <http://localhost:8088/live/result.flv>
+hippocampus 运行起来，vlc或者网页 访问 <http://localhost:7001/live/cam_1.flv>

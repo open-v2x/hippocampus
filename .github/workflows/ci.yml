@@ -47,7 +47,7 @@ jobs:
             set -e
 
             docker rm -f lalserver || true
-            docker run -d -p 1935:1935 -p 8088:8080 --name=lalserver q191201771/lal /lal/bin/lalserver -c /lal/conf/lalserver.conf.json
+            docker run -d -p 1935:1935 -p 7001:8080 --name=lalserver q191201771/lal /lal/bin/lalserver -c /lal/conf/lalserver.conf.json
 
             containerName1="gst-rtsp-launch"
 
@@ -107,7 +107,7 @@ jobs:
               echo "openv2x/hippocampus:latest do not exist"
             fi
 
-            docker pull openv2x/hippocampus:latest
+            docker pull registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
             nvidia-docker run -d --restart=always --env "RSU=R328328" --name=hippocampus-328 --gpus all --net=host -v ~/Videos/test.flv:/home/hippocampus/video/test.flv -v ~/Videos/test1.flv:/home/hippocampus/video/test1.flv openv2x/hippocampus:latest
             nvidia-docker run -d --restart=always --env "RSU=R329329" --name=hippocampus-329 --gpus all --net=host -v ~/Videos/test.flv:/home/hippocampus/video/test.flv -v ~/Videos/test1.flv:/home/hippocampus/video/test1.flv openv2x/hippocampus:latest
        
