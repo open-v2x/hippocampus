@@ -47,7 +47,7 @@ jobs:
             set -e
 
             docker rm -f lalserver || true
-            docker run -it -p 1935:1935 -p 8088:8080 --name=lalserver q191201771/lal /lal/bin/lalserver -c /lal/conf/lalserver.conf.json
+            docker run -d -p 1935:1935 -p 8088:8080 --name=lalserver q191201771/lal /lal/bin/lalserver -c /lal/conf/lalserver.conf.json
 
             containerName1="gst-rtsp-launch"
 
