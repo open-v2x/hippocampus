@@ -70,18 +70,17 @@ def main():
     """
     yml_path = "config/default.yml"
 
-    # 获取 hippocampus接入的RSU
-    key = os.getenv("RSU") or "R328328"
     with open(yml_path, encoding="utf-8") as f:
         data = yaml.load(f, Loader=yaml.Loader)
 
     processes = []
     multiprocessing.set_start_method("spawn")
-    for camera in data[key]:
-        # 开启进程去执行任务
-        p=multiprocessing.Process(target = func,args=(camera,))
-        p.start()
-        processes.append(p)
+    for key in data:
+        for camera in data[key]:
+            # 开启进程去执行任务
+            p=multiprocessing.Process(target = func,args=(camera,))
+            p.start()
+            processes.append(p)
     for p in processes:
         p.join()
 
