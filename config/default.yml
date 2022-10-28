@@ -1,13 +1,17 @@
 R328328:
   - camera_id: 'cam_1'
     rtsp: rtsp://127.0.0.1:8554/test
-    channel_name: test
+    emulator: gst-rtsp-launch-1
+    video: test.flv
+    port: 8554
   - camera_id: 'cam_2'
     rtsp: rtsp://127.0.0.1:8554/test
-    channel_name: movie
+    emulator: gst-rtsp-launch-2
+    video: test1.flv
+    port: 8553
 R329329:
   - camera_id: 'cam_3'
     rtsp: rtsp://127.0.0.1:8552/test
-R327327:
-  - camera_id: 'cam_4'
-    rtsp: rtsp://127.0.0.1:8554/test
+    emulator: gst-rtsp-launch-3
+    video: traffic_2.flv
+    port: 8552
