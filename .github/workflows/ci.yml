@@ -47,9 +47,9 @@ jobs:
             set -e
 
             array1=("lalserver" "hippocampus")
-            array2=(`cat ../../config/default.yml | grep "emulator" | awk '{print $2}'`)
-            videos=(`cat ../../config/default.yml | grep "video" | awk '{print $2}'`)
-            ports=(`cat ../../config/default.yml | grep "port" | awk '{print $2}'`)
+            array2=(`cat config/default.yml | grep "emulator" | awk '{print $2}'`)
+            videos=(`cat config/default.yml | grep "video" | awk '{print $2}'`)
+            ports=(`cat config/default.yml | grep "port" | awk '{print $2}'`)
             array_new=(${array1[@]} ${array2[*]})
 
             for(( i=0;i<${#array_new[@]};i++))
