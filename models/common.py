@@ -11,14 +11,14 @@ from collections import OrderedDict, namedtuple
 from copy import copy
 from pathlib import Path
 
-import cv2
+import cv2 # type: ignore
 import numpy as np
-import pandas as pd
-import requests
+import pandas as pd # type: ignore
+# import requests
 import torch
 import torch.nn as nn
-import yaml
-from PIL import Image
+# import yaml
+from PIL import Image # type: ignore
 from torch.cuda import amp
 
 from utils.datasets import exif_transpose, letterbox
@@ -300,9 +300,9 @@ class DetectMultiBackend(nn.Module):
         pt, jit, onnx, engine, tflite, pb, saved_model, coreml, xml = (suffix == x for x in suffixes)  # backends
         stride, names = 64, [f'class{i}' for i in range(1000)]  # assign defaults
         w = attempt_download(w)  # download if not local
-        if data:  # data.yaml path (optional)
-            with open(data, errors='ignore') as f:
-                names = yaml.safe_load(f)['names']  # class names
+        # if data:  # data.yaml path (optional)
+        #     with open(data, errors='ignore') as f:
+        #         names = yaml.safe_load(f)['names']  # class names
 
         if pt:  # PyTorch
             model = attempt_load(weights if isinstance(weights, list) else w, map_location=device)
@@ -320,74 +320,74 @@ class DetectMultiBackend(nn.Module):
             LOGGER.info(f'Loading {w} for ONNX OpenCV DNN inference...')
             check_requirements(('opencv-python>=4.5.4',))
             net = cv2.dnn.readNetFromONNX(w)
-        elif onnx:  # ONNX Runtime
-            LOGGER.info(f'Loading {w} for ONNX Runtime inference...')
-            cuda = torch.cuda.is_available()
-            check_requirements(('onnx', 'onnxruntime-gpu' if cuda else 'onnxruntime'))
-            import onnxruntime
-            providers = ['CUDAExecutionProvider', 'CPUExecutionProvider'] if cuda else ['CPUExecutionProvider']
-            session = onnxruntime.InferenceSession(w, providers=providers)
-        elif xml:  # OpenVINO
-            LOGGER.info(f'Loading {w} for OpenVINO inference...')
-            check_requirements(('openvino-dev',))  # requires openvino-dev: https://pypi.org/project/openvino-dev/
-            import openvino.inference_engine as ie
-            core = ie.IECore()
-            network = core.read_network(model=w, weights=Path(w).with_suffix('.bin'))  # *.xml, *.bin paths
-            executable_network = core.load_network(network, device_name='CPU', num_requests=1)
-        elif engine:  # TensorRT
-            LOGGER.info(f'Loading {w} for TensorRT inference...')
-            import tensorrt as trt  # https://developer.nvidia.com/nvidia-tensorrt-download
-            check_version(trt.__version__, '7.0.0', hard=True)  # require tensorrt>=7.0.0
-            Binding = namedtuple('Binding', ('name', 'dtype', 'shape', 'data', 'ptr'))
-            logger = trt.Logger(trt.Logger.INFO)
-            with open(w, 'rb') as f, trt.Runtime(logger) as runtime:
-                model = runtime.deserialize_cuda_engine(f.read())
-            bindings = OrderedDict()
-            for index in range(model.num_bindings):
-                name = model.get_binding_name(index)
-                dtype = trt.nptype(model.get_binding_dtype(index))
-                shape = tuple(model.get_binding_shape(index))
-                data = torch.from_numpy(np.empty(shape, dtype=np.dtype(dtype))).to(device)
-                bindings[name] = Binding(name, dtype, shape, data, int(data.data_ptr()))
-            binding_addrs = OrderedDict((n, d.ptr) for n, d in bindings.items())
-            context = model.create_execution_context()
-            batch_size = bindings['images'].shape[0]
-        elif coreml:  # CoreML
-            LOGGER.info(f'Loading {w} for CoreML inference...')
-            import coremltools as ct
-            model = ct.models.MLModel(w)
-        else:  # TensorFlow (SavedModel, GraphDef, Lite, Edge TPU)
-            if saved_model:  # SavedModel
-                LOGGER.info(f'Loading {w} for TensorFlow SavedModel inference...')
-                import tensorflow as tf
-                model = tf.keras.models.load_model(w)
-            elif pb:  # GraphDef https://www.tensorflow.org/guide/migrate#a_graphpb_or_graphpbtxt
-                LOGGER.info(f'Loading {w} for TensorFlow GraphDef inference...')
-                import tensorflow as tf
+        # elif onnx:  # ONNX Runtime
+        #     LOGGER.info(f'Loading {w} for ONNX Runtime inference...')
+        #     cuda = torch.cuda.is_available()
+        #     check_requirements(('onnx', 'onnxruntime-gpu' if cuda else 'onnxruntime'))
+        #     import onnxruntime
+        #     providers = ['CUDAExecutionProvider', 'CPUExecutionProvider'] if cuda else ['CPUExecutionProvider']
+        #     session = onnxruntime.InferenceSession(w, providers=providers)
+        # elif xml:  # OpenVINO
+        #     LOGGER.info(f'Loading {w} for OpenVINO inference...')
+        #     check_requirements(('openvino-dev',))  # requires openvino-dev: https://pypi.org/project/openvino-dev/
+        #     import openvino.inference_engine as ie
+        #     core = ie.IECore()
+        #     network = core.read_network(model=w, weights=Path(w).with_suffix('.bin'))  # *.xml, *.bin paths
+        #     executable_network = core.load_network(network, device_name='CPU', num_requests=1)
+        # elif engine:  # TensorRT
+        #     LOGGER.info(f'Loading {w} for TensorRT inference...')
+        #     import tensorrt as trt  # https://developer.nvidia.com/nvidia-tensorrt-download
+        #     check_version(trt.__version__, '7.0.0', hard=True)  # require tensorrt>=7.0.0
+        #     Binding = namedtuple('Binding', ('name', 'dtype', 'shape', 'data', 'ptr'))
+        #     logger = trt.Logger(trt.Logger.INFO)
+        #     with open(w, 'rb') as f, trt.Runtime(logger) as runtime:
+        #         model = runtime.deserialize_cuda_engine(f.read())
+        #     bindings = OrderedDict()
+        #     for index in range(model.num_bindings):
+        #         name = model.get_binding_name(index)
+        #         dtype = trt.nptype(model.get_binding_dtype(index))
+        #         shape = tuple(model.get_binding_shape(index))
+        #         data = torch.from_numpy(np.empty(shape, dtype=np.dtype(dtype))).to(device)
+        #         bindings[name] = Binding(name, dtype, shape, data, int(data.data_ptr()))
+        #     binding_addrs = OrderedDict((n, d.ptr) for n, d in bindings.items())
+        #     context = model.create_execution_context()
+        #     batch_size = bindings['images'].shape[0]
+        # elif coreml:  # CoreML
+        #     LOGGER.info(f'Loading {w} for CoreML inference...')
+        #     import coremltools as ct
+        #     model = ct.models.MLModel(w)
+        # else:  # TensorFlow (SavedModel, GraphDef, Lite, Edge TPU)
+        #     if saved_model:  # SavedModel
+        #         LOGGER.info(f'Loading {w} for TensorFlow SavedModel inference...')
+        #         import tensorflow as tf
+        #         model = tf.keras.models.load_model(w)
+        #     elif pb:  # GraphDef https://www.tensorflow.org/guide/migrate#a_graphpb_or_graphpbtxt
+        #         LOGGER.info(f'Loading {w} for TensorFlow GraphDef inference...')
+        #         import tensorflow as tf
 
-                def wrap_frozen_graph(gd, inputs, outputs):
-                    x = tf.compat.v1.wrap_function(lambda: tf.compat.v1.import_graph_def(gd, name=""), [])  # wrapped
-                    return x.prune(tf.nest.map_structure(x.graph.as_graph_element, inputs),
-                                   tf.nest.map_structure(x.graph.as_graph_element, outputs))
+        #         def wrap_frozen_graph(gd, inputs, outputs):
+        #             x = tf.compat.v1.wrap_function(lambda: tf.compat.v1.import_graph_def(gd, name=""), [])  # wrapped
+        #             return x.prune(tf.nest.map_structure(x.graph.as_graph_element, inputs),
+        #                            tf.nest.map_structure(x.graph.as_graph_element, outputs))
 
-                graph_def = tf.Graph().as_graph_def()
-                graph_def.ParseFromString(open(w, 'rb').read())
-                frozen_func = wrap_frozen_graph(gd=graph_def, inputs="x:0", outputs="Identity:0")
-            elif tflite:  # https://www.tensorflow.org/lite/guide/python#install_tensorflow_lite_for_python
-                if 'edgetpu' in w.lower():  # Edge TPU
-                    LOGGER.info(f'Loading {w} for TensorFlow Lite Edge TPU inference...')
-                    import tflite_runtime.interpreter as tfli  # install https://coral.ai/software/#edgetpu-runtime
-                    delegate = {'Linux': 'libedgetpu.so.1',
-                                'Darwin': 'libedgetpu.1.dylib',
-                                'Windows': 'edgetpu.dll'}[platform.system()]
-                    interpreter = tfli.Interpreter(model_path=w, experimental_delegates=[tfli.load_delegate(delegate)])
-                else:  # Lite
-                    LOGGER.info(f'Loading {w} for TensorFlow Lite inference...')
-                    import tensorflow as tf
-                    interpreter = tf.lite.Interpreter(model_path=w)  # load TFLite model
-                interpreter.allocate_tensors()  # allocate
-                input_details = interpreter.get_input_details()  # inputs
-                output_details = interpreter.get_output_details()  # outputs
+        #         graph_def = tf.Graph().as_graph_def()
+        #         graph_def.ParseFromString(open(w, 'rb').read())
+        #         frozen_func = wrap_frozen_graph(gd=graph_def, inputs="x:0", outputs="Identity:0")
+        #     elif tflite:  # https://www.tensorflow.org/lite/guide/python#install_tensorflow_lite_for_python
+        #         if 'edgetpu' in w.lower():  # Edge TPU
+        #             LOGGER.info(f'Loading {w} for TensorFlow Lite Edge TPU inference...')
+        #             import tflite_runtime.interpreter as tfli  # install https://coral.ai/software/#edgetpu-runtime
+        #             delegate = {'Linux': 'libedgetpu.so.1',
+        #                         'Darwin': 'libedgetpu.1.dylib',
+        #                         'Windows': 'edgetpu.dll'}[platform.system()]
+        #             interpreter = tfli.Interpreter(model_path=w, experimental_delegates=[tfli.load_delegate(delegate)])
+        #         else:  # Lite
+        #             LOGGER.info(f'Loading {w} for TensorFlow Lite inference...')
+        #             import tensorflow as tf
+        #             interpreter = tf.lite.Interpreter(model_path=w)  # load TFLite model
+        #         interpreter.allocate_tensors()  # allocate
+        #         input_details = interpreter.get_input_details()  # inputs
+        #         output_details = interpreter.get_output_details()  # outputs
         self.__dict__.update(locals())  # assign all variables to self
 
     def forward(self, im, augment=False, visualize=False, val=False):
@@ -460,92 +460,92 @@ class DetectMultiBackend(nn.Module):
                 self.forward(im)  # warmup
 
 
-class AutoShape(nn.Module):
-    # YOLOv5 input-robust model wrapper for passing cv2/np/PIL/torch inputs. Includes preprocessing, inference and NMS
-    conf = 0.25  # NMS confidence threshold
-    iou = 0.45  # NMS IoU threshold
-    agnostic = False  # NMS class-agnostic
-    multi_label = False  # NMS multiple labels per box
-    classes = None  # (optional list) filter by class, i.e. = [0, 15, 16] for COCO persons, cats and dogs
-    max_det = 1000  # maximum number of detections per image
-    amp = False  # Automatic Mixed Precision (AMP) inference
+# class AutoShape(nn.Module):
+#     # YOLOv5 input-robust model wrapper for passing cv2/np/PIL/torch inputs. Includes preprocessing, inference and NMS
+#     conf = 0.25  # NMS confidence threshold
+#     iou = 0.45  # NMS IoU threshold
+#     agnostic = False  # NMS class-agnostic
+#     multi_label = False  # NMS multiple labels per box
+#     classes = None  # (optional list) filter by class, i.e. = [0, 15, 16] for COCO persons, cats and dogs
+#     max_det = 1000  # maximum number of detections per image
+#     amp = False  # Automatic Mixed Precision (AMP) inference
 
-    def __init__(self, model):
-        super().__init__()
-        LOGGER.info('Adding AutoShape... ')
-        copy_attr(self, model, include=('yaml', 'nc', 'hyp', 'names', 'stride', 'abc'), exclude=())  # copy attributes
-        self.dmb = isinstance(model, DetectMultiBackend)  # DetectMultiBackend() instance
-        self.pt = not self.dmb or model.pt  # PyTorch model
-        self.model = model.eval()
+#     def __init__(self, model):
+#         super().__init__()
+#         LOGGER.info('Adding AutoShape... ')
+#         copy_attr(self, model, include=('yaml', 'nc', 'hyp', 'names', 'stride', 'abc'), exclude=())  # copy attributes
+#         self.dmb = isinstance(model, DetectMultiBackend)  # DetectMultiBackend() instance
+#         self.pt = not self.dmb or model.pt  # PyTorch model
+#         self.model = model.eval()
 
-    def _apply(self, fn):
-        # Apply to(), cpu(), cuda(), half() to model tensors that are not parameters or registered buffers
-        self = super()._apply(fn)
-        if self.pt:
-            m = self.model.model.model[-1] if self.dmb else self.model.model[-1]  # Detect()
-            m.stride = fn(m.stride)
-            m.grid = list(map(fn, m.grid))
-            if isinstance(m.anchor_grid, list):
-                m.anchor_grid = list(map(fn, m.anchor_grid))
-        return self
+#     def _apply(self, fn):
+#         # Apply to(), cpu(), cuda(), half() to model tensors that are not parameters or registered buffers
+#         self = super()._apply(fn)
+#         if self.pt:
+#             m = self.model.model.model[-1] if self.dmb else self.model.model[-1]  # Detect()
+#             m.stride = fn(m.stride)
+#             m.grid = list(map(fn, m.grid))
+#             if isinstance(m.anchor_grid, list):
+#                 m.anchor_grid = list(map(fn, m.anchor_grid))
+#         return self
 
-    @torch.no_grad()
-    def forward(self, imgs, size=640, augment=False, profile=False):
-        # Inference from various sources. For height=640, width=1280, RGB images example inputs are:
-        #   file:       imgs = 'data/images/zidane.jpg'  # str or PosixPath
-        #   URI:             = 'https://ultralytics.com/images/zidane.jpg'
-        #   OpenCV:          = cv2.imread('image.jpg')[:,:,::-1]  # HWC BGR to RGB x(640,1280,3)
-        #   PIL:             = Image.open('image.jpg') or ImageGrab.grab()  # HWC x(640,1280,3)
-        #   numpy:           = np.zeros((640,1280,3))  # HWC
-        #   torch:           = torch.zeros(16,3,320,640)  # BCHW (scaled to size=640, 0-1 values)
-        #   multiple:        = [Image.open('image1.jpg'), Image.open('image2.jpg'), ...]  # list of images
+    # @torch.no_grad()
+    # def forward(self, imgs, size=640, augment=False, profile=False):
+    #     # Inference from various sources. For height=640, width=1280, RGB images example inputs are:
+    #     #   file:       imgs = 'data/images/zidane.jpg'  # str or PosixPath
+    #     #   URI:             = 'https://ultralytics.com/images/zidane.jpg'
+    #     #   OpenCV:          = cv2.imread('image.jpg')[:,:,::-1]  # HWC BGR to RGB x(640,1280,3)
+    #     #   PIL:             = Image.open('image.jpg') or ImageGrab.grab()  # HWC x(640,1280,3)
+    #     #   numpy:           = np.zeros((640,1280,3))  # HWC
+    #     #   torch:           = torch.zeros(16,3,320,640)  # BCHW (scaled to size=640, 0-1 values)
+    #     #   multiple:        = [Image.open('image1.jpg'), Image.open('image2.jpg'), ...]  # list of images
 
-        t = [time_sync()]
-        p = next(self.model.parameters()) if self.pt else torch.zeros(1)  # for device and type
-        autocast = self.amp and (p.device.type != 'cpu')  # Automatic Mixed Precision (AMP) inference
-        if isinstance(imgs, torch.Tensor):  # torch
-            with amp.autocast(enabled=autocast):
-                return self.model(imgs.to(p.device).type_as(p), augment, profile)  # inference
+    #     t = [time_sync()]
+    #     p = next(self.model.parameters()) if self.pt else torch.zeros(1)  # for device and type
+    #     autocast = self.amp and (p.device.type != 'cpu')  # Automatic Mixed Precision (AMP) inference
+    #     if isinstance(imgs, torch.Tensor):  # torch
+    #         with amp.autocast(enabled=autocast):
+    #             return self.model(imgs.to(p.device).type_as(p), augment, profile)  # inference
 
         # Pre-process
-        n, imgs = (len(imgs), imgs) if isinstance(imgs, list) else (1, [imgs])  # number of images, list of images
-        shape0, shape1, files = [], [], []  # image and inference shapes, filenames
-        for i, im in enumerate(imgs):
-            f = f'image{i}'  # filename
-            if isinstance(im, (str, Path)):  # filename or uri
-                im, f = Image.open(requests.get(im, stream=True).raw if str(im).startswith('http') else im), im
-                im = np.asarray(exif_transpose(im))
-            elif isinstance(im, Image.Image):  # PIL Image
-                im, f = np.asarray(exif_transpose(im)), getattr(im, 'filename', f) or f
-            files.append(Path(f).with_suffix('.jpg').name)
-            if im.shape[0] < 5:  # image in CHW
-                im = im.transpose((1, 2, 0))  # reverse dataloader .transpose(2, 0, 1)
-            im = im[..., :3] if im.ndim == 3 else np.tile(im[..., None], 3)  # enforce 3ch input
-            s = im.shape[:2]  # HWC
-            shape0.append(s)  # image shape
-            g = (size / max(s))  # gain
-            shape1.append([y * g for y in s])
-            imgs[i] = im if im.data.contiguous else np.ascontiguousarray(im)  # update
-        shape1 = [make_divisible(x, self.stride) for x in np.stack(shape1, 0).max(0)]  # inference shape
-        x = [letterbox(im, new_shape=shape1 if self.pt else size, auto=False)[0] for im in imgs]  # pad
-        x = np.stack(x, 0) if n > 1 else x[0][None]  # stack
-        x = np.ascontiguousarray(x.transpose((0, 3, 1, 2)))  # BHWC to BCHW
-        x = torch.from_numpy(x).to(p.device).type_as(p) / 255  # uint8 to fp16/32
-        t.append(time_sync())
+        # n, imgs = (len(imgs), imgs) if isinstance(imgs, list) else (1, [imgs])  # number of images, list of images
+        # shape0, shape1, files = [], [], []  # image and inference shapes, filenames
+        # for i, im in enumerate(imgs):
+        #     f = f'image{i}'  # filename
+        #     if isinstance(im, (str, Path)):  # filename or uri
+        #         im, f = Image.open(requests.get(im, stream=True).raw if str(im).startswith('http') else im), im
+        #         im = np.asarray(exif_transpose(im))
+        #     elif isinstance(im, Image.Image):  # PIL Image
+        #         im, f = np.asarray(exif_transpose(im)), getattr(im, 'filename', f) or f
+        #     files.append(Path(f).with_suffix('.jpg').name)
+        #     if im.shape[0] < 5:  # image in CHW
+        #         im = im.transpose((1, 2, 0))  # reverse dataloader .transpose(2, 0, 1)
+        #     im = im[..., :3] if im.ndim == 3 else np.tile(im[..., None], 3)  # enforce 3ch input
+        #     s = im.shape[:2]  # HWC
+        #     shape0.append(s)  # image shape
+        #     g = (size / max(s))  # gain
+        #     shape1.append([y * g for y in s])
+        #     imgs[i] = im if im.data.contiguous else np.ascontiguousarray(im)  # update
+        # shape1 = [make_divisible(x, self.stride) for x in np.stack(shape1, 0).max(0)]  # inference shape
+        # x = [letterbox(im, new_shape=shape1 if self.pt else size, auto=False)[0] for im in imgs]  # pad
+        # x = np.stack(x, 0) if n > 1 else x[0][None]  # stack
+        # x = np.ascontiguousarray(x.transpose((0, 3, 1, 2)))  # BHWC to BCHW
+        # x = torch.from_numpy(x).to(p.device).type_as(p) / 255  # uint8 to fp16/32
+        # t.append(time_sync())
 
-        with amp.autocast(enabled=autocast):
-            # Inference
-            y = self.model(x, augment, profile)  # forward
-            t.append(time_sync())
+        # with amp.autocast(enabled=autocast):
+        #     # Inference
+        #     y = self.model(x, augment, profile)  # forward
+        #     t.append(time_sync())
 
-            # Post-process
-            y = non_max_suppression(y if self.dmb else y[0], self.conf, iou_thres=self.iou, classes=self.classes,
-                                    agnostic=self.agnostic, multi_label=self.multi_label, max_det=self.max_det)  # NMS
-            for i in range(n):
-                scale_coords(shape1, y[i][:, :4], shape0[i])
+        #     # Post-process
+        #     y = non_max_suppression(y if self.dmb else y[0], self.conf, iou_thres=self.iou, classes=self.classes,
+        #                             agnostic=self.agnostic, multi_label=self.multi_label, max_det=self.max_det)  # NMS
+        #     for i in range(n):
+        #         scale_coords(shape1, y[i][:, :4], shape0[i])
 
-            t.append(time_sync())
-            return Detections(imgs, y, files, t, self.names, x.shape)
+        #     t.append(time_sync())
+        #     return Detections(imgs, y, files, t, self.names, x.shape)
 
 
 class Detections:

@@ -1,16 +1,16 @@
 import argparse
 
-from wandb_utils import WandbLogger
+# from wandb_utils import WandbLogger
 
 from utils.general import LOGGER
 
 WANDB_ARTIFACT_PREFIX = 'wandb-artifact://'
 
 
-def create_dataset_artifact(opt):
-    logger = WandbLogger(opt, None, job_type='Dataset Creation')  # TODO: return value unused
-    if not logger.wandb:
-        LOGGER.info("install wandb using `pip install wandb` to log the dataset")
+# def create_dataset_artifact(opt):
+#     logger = WandbLogger(opt, None, job_type='Dataset Creation')  # TODO: return value unused
+#     if not logger.wandb:
+#         LOGGER.info("install wandb using `pip install wandb` to log the dataset")
 
 
 if __name__ == '__main__':
@@ -24,4 +24,4 @@ if __name__ == '__main__':
     opt = parser.parse_args()
     opt.resume = False  # Explicitly disallow resume check for dataset upload job
 
-    create_dataset_artifact(opt)
+    # create_dataset_artifact(opt)

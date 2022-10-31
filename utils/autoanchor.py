@@ -7,8 +7,8 @@ import random
 
 import numpy as np
 import torch
-import yaml
-from tqdm import tqdm
+# import yaml
+from tqdm import tqdm # type: ignore
 
 from utils.general import LOGGER, colorstr, emojis
 
@@ -79,7 +79,7 @@ def kmean_anchors(dataset='./data/coco128.yaml', n=9, img_size=640, thr=4.0, gen
         Usage:
             from utils.autoanchor import *; _ = kmean_anchors()
     """
-    from scipy.cluster.vq import kmeans
+    from scipy.cluster.vq import kmeans # type: ignore
 
     thr = 1 / thr
 
@@ -106,11 +106,11 @@ def kmean_anchors(dataset='./data/coco128.yaml', n=9, img_size=640, thr=4.0, gen
             LOGGER.info(s[:-2])
         return k
 
-    if isinstance(dataset, str):  # *.yaml file
-        with open(dataset, errors='ignore') as f:
-            data_dict = yaml.safe_load(f)  # model dict
-        from utils.datasets import LoadImagesAndLabels
-        dataset = LoadImagesAndLabels(data_dict['train'], augment=True, rect=True)
+    # if isinstance(dataset, str):  # *.yaml file
+    #     with open(dataset, errors='ignore') as f:
+    #         data_dict = yaml.safe_load(f)  # model dict
+    #     from utils.datasets import LoadImagesAndLabels
+    #     dataset = LoadImagesAndLabels(data_dict['train'], augment=True, rect=True)
 
     # Get label wh
     shapes = img_size * dataset.shapes / dataset.shapes.max(1, keepdims=True)

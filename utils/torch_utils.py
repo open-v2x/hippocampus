@@ -21,7 +21,7 @@ import torch.nn.functional as F
 from utils.general import LOGGER
 
 try:
-    import thop  # for FLOPs computation
+    import thop  # for FLOPs computation # type: ignore
 except ImportError:
     thop = None
 

@@ -25,7 +25,7 @@ from utils.plots import feature_visualization
 from utils.torch_utils import fuse_conv_and_bn, initialize_weights, model_info, scale_img, select_device, time_sync
 
 try:
-    import thop  # for FLOPs computation
+    import thop # for FLOPs computation # type: ignore
 except ImportError:
     thop = None
 
@@ -86,11 +86,11 @@ class Model(nn.Module):
         super().__init__()
         if isinstance(cfg, dict):
             self.yaml = cfg  # model dict
-        else:  # is *.yaml
-            import yaml  # for torch hub
-            self.yaml_file = Path(cfg).name
-            with open(cfg, encoding='ascii', errors='ignore') as f:
-                self.yaml = yaml.safe_load(f)  # model dict
+        # else:  # is *.yaml
+        #     import yaml  # for torch hub
+        #     self.yaml_file = Path(cfg).name
+        #     with open(cfg, encoding='ascii', errors='ignore') as f:
+        #         self.yaml = yaml.safe_load(f)  # model dict
 
         # Define model
         ch = self.yaml['ch'] = self.yaml.get('ch', ch)  # input channels

@@ -1,5 +1,4 @@
 from detector import Detector
-from utils.requests_utils import post
 from tracker import plot_bboxes
 import cv2
 import os
