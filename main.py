@@ -18,7 +18,6 @@ def func(camera):
     rtmp="rtmp://localhost:1935/live/" + camera.get("camera_id") + ".flv"
     command = ['ffmpeg',
             '-y',
-            '-stream_loop', '-1',
             '-f', 'rawvideo',
             '-vcodec', 'rawvideo',
             '-pix_fmt', 'bgr24',
