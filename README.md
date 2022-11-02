@@ -1,16 +1,15 @@
 # OpenV2X hippocampus
 
-> OpenV2X Video Perception Module, it supports Video Object Detection (VID) and Multiple Object
-> Tracking (MOT)
+OpenV2X Video Perception Module, it supports Video Object Detection (VID) and Multiple Object Tracking (MOT)
 
-1. [如何开发](docs/1-How-to-develop.md)
+[Quick Start](docs/1-How-to-develop.md)
 
-## hippocampus工程化设计方案
+## Archtecture
 
-hippocampus 工程化设计图：
+Design archetecture:
 
 ![](docs/images/engineering-design-drawing.jpeg)
 
-视频流处理pipeline:
+Workflow pipeline:
 
 ![](docs/images/pipeline.jpeg)

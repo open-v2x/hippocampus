@@ -8,22 +8,31 @@
 
 <!-- code_chunk_output -->
 
-- [hippocampus入门开发文档](#hippocampus-入门开发文档)
-  - [1、开发环境及工具](#开发环境及工具)
-  - [2、hippocampus 部署](#hippocampus-部署)
-  - [3、本地调试](#本地调试)
+- [hippocampus 入门开发文档](#hippocampus-入门开发文档)
+  - [1. 开发环境及工具](#1-开发环境及工具)
+  - [2. hippocampus 部署](#2-hippocampus-部署)
+  - [3. 本地调试](#3-本地调试)
 
 <!-- code_chunk_output -->
 
-## 1、开发环境及工具
+## 1. 开发环境及工具
 
-1. 安装 GPU 驱动
+### 1.1 Prerequisite
 
-1.1 参考 <https://www.linuxcapable.com/how-to-install-nvidia-drivers-on-ubuntu-22-04-lts/>
+- CPU: 2 Core
+- Memory: 4G
+- GPU: Nvidia T4
+- Disk: 40G
+- OS: Ubuntu 22.04
+
+### 1.2 安装 GPU 驱动
+
+参考 <https://www.linuxcapable.com/how-to-install-nvidia-drivers-on-ubuntu-22-04-lts/>
 
 ```bash
 ubuntu-drivers devices
-sudo ubuntu-drivers autoinstall
+ubuntu-drivers autoinstall
+
 reboot
 ```
 
@@ -51,18 +60,20 @@ Wed Oct 12 17:55:51 2022
 +-----------------------------------------------------------------------------+
 ```
 
-1.2. 参考 <https://zhc3o5gmf9.feishu.cn/docx/doxcndHJNw5SGOeAh4SxOiwcRSf>
+### 1.3 安装 GPU 容器引擎
+
+参考 <https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#installing-on-ubuntu-and-debian>
 
 ```bash
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
 curl -s -L https://nvidia.github.io/libnvidia-container/gpgkey | sudo apt-key add -
 curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | sudo tee /etc/apt/sources.list.d/libnvidia-container.list
-sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
+apt-get update && sudo apt-get install -y nvidia-container-toolkit
 
 apt install docker.io -y
 ```
 
-1.3. 修改 docker 配置文件 /etc/docker/daemon.json
+修改 docker 配置文件 `vi /etc/docker/daemon.json`
 
 ```json
 {
@@ -76,10 +87,10 @@ apt install docker.io -y
 }
 ```
 
-1.4. 启动 docker
+启动 docker
 
 ```bash
-sudo systemctl restart docker
+systemctl restart docker
 ```
 
 1.5. 测试 docker 可以使用 GPU
@@ -106,7 +117,7 @@ Test PASSED
 Done
 ```
 
-## 2、 hippocampus 部署
+## 2. hippocampus 部署
 
 1. hippocampus 开发环境准备
 
@@ -149,7 +160,7 @@ pip install -r requirements.txt
 python main.py
 ```
 
-## 3、本地调试
+## 3. 本地调试
 
 1. ffmpeg 推流调试
 
