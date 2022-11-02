@@ -8,14 +8,14 @@ import os
 from copy import copy
 from pathlib import Path
 
-import cv2
-import matplotlib
-import matplotlib.pyplot as plt
+import cv2 # type: ignore
+import matplotlib # type: ignore
+import matplotlib.pyplot as plt # type: ignore
 import numpy as np
-import pandas as pd
-import seaborn as sn
+import pandas as pd # type: ignore
+import seaborn as sn # type: ignore
 import torch
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont # type: ignore
 
 from utils.general import (LOGGER, Timeout, check_requirements, clip_coords, increment_path, is_ascii, is_chinese,
                            try_except, user_config_dir, xywh2xyxy, xyxy2xywh)
@@ -159,7 +159,7 @@ def hist2d(x, y, n=100):
 
 
 def butter_lowpass_filtfilt(data, cutoff=1500, fs=50000, order=5):
-    from scipy.signal import butter, filtfilt
+    from scipy.signal import butter, filtfilt # type: ignore
 
     # https://stackoverflow.com/questions/28536191/how-to-filter-smooth-with-scipy-numpy
     def butter_lowpass(cutoff, fs, order):

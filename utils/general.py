@@ -21,13 +21,13 @@ from pathlib import Path
 from subprocess import check_output
 from zipfile import ZipFile
 
-import cv2
+import cv2 # type: ignore
 import numpy as np
-import pandas as pd
-import pkg_resources as pkg
+import pandas as pd # type: ignore
+import pkg_resources as pkg # type: ignore
 import torch
-import torchvision
-import yaml
+import torchvision # type: ignore
+# import yaml
 
 from utils.downloads import gsutil_getsize
 from utils.metrics import box_iou, fitness
@@ -35,7 +35,7 @@ from utils.metrics import box_iou, fitness
 # Settings
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[1]  # YOLOv5 root directory
-NUM_THREADS = min(8, max(1, os.cpu_count() - 1))  # number of YOLOv5 multiprocessing threads
+NUM_THREADS = min(8, max(1, os.cpu_count() - 1))  # type: ignore
 
 torch.set_printoptions(linewidth=320, precision=5, profile='long')
 np.set_printoptions(linewidth=320, formatter={'float_kind': '{:11.5g}'.format})  # format short g, %precision=5
@@ -187,7 +187,7 @@ def is_docker():
 def is_colab():
     # Is environment a Google Colab instance?
     try:
-        import google.colab
+        import google.colab # type: ignore
         return True
     except ImportError:
         return False
@@ -388,10 +388,10 @@ def check_dataset(data, autodownload=True):
         data = next((Path('../datasets') / Path(data).stem).rglob('*.yaml'))
         extract_dir, autodownload = data.parent, False
 
-    # Read yaml (optional)
-    if isinstance(data, (str, Path)):
-        with open(data, errors='ignore') as f:
-            data = yaml.safe_load(f)  # dictionary
+    # # Read yaml (optional)
+    # if isinstance(data, (str, Path)):
+    #     with open(data, errors='ignore') as f:
+    #         data = yaml.safe_load(f)  # dictionary
 
     # Parse yaml
     path = extract_dir or Path(data.get('path') or '')  # optional 'path' default to '.'
@@ -789,16 +789,16 @@ def print_mutation(results, hyp, save_dir, bucket):
     print(colorstr('evolve: ') + ', '.join(f'{x:20.5g}' for x in vals), end='\n\n\n')
 
     # Save yaml
-    with open(evolve_yaml, 'w') as f:
-        data = pd.read_csv(evolve_csv)
-        data = data.rename(columns=lambda x: x.strip())  # strip keys
-        i = np.argmax(fitness(data.values[:, :7]))  #
-        f.write('# YOLOv5 Hyperparameter Evolution Results\n' +
-                f'# Best generation: {i}\n' +
-                f'# Last generation: {len(data) - 1}\n' +
-                '# ' + ', '.join(f'{x.strip():>20s}' for x in keys[:7]) + '\n' +
-                '# ' + ', '.join(f'{x:>20.5g}' for x in data.values[i, :7]) + '\n\n')
-        yaml.safe_dump(hyp, f, sort_keys=False)
+    # with open(evolve_yaml, 'w') as f:
+    #     data = pd.read_csv(evolve_csv)
+    #     data = data.rename(columns=lambda x: x.strip())  # strip keys
+    #     i = np.argmax(fitness(data.values[:, :7]))  #
+    #     f.write('# YOLOv5 Hyperparameter Evolution Results\n' +
+    #             f'# Best generation: {i}\n' +
+    #             f'# Last generation: {len(data) - 1}\n' +
+    #             '# ' + ', '.join(f'{x.strip():>20s}' for x in keys[:7]) + '\n' +
+    #             '# ' + ', '.join(f'{x:>20.5g}' for x in data.values[i, :7]) + '\n\n')
+    #     yaml.safe_dump(hyp, f, sort_keys=False)
 
     if bucket:
         os.system(f'gsutil cp {evolve_csv} {evolve_yaml} gs://{bucket}')  # upload

@@ -7,8 +7,8 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Dict
 
-import yaml
-from tqdm import tqdm
+import yaml # type: ignore
+from tqdm import tqdm  # type: ignore
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[3]  # YOLOv5 root directory
@@ -19,7 +19,7 @@ from utils.datasets import LoadImagesAndLabels, img2label_paths
 from utils.general import LOGGER, check_dataset, check_file
 
 try:
-    import wandb
+    import wandb  # type: ignore
 
     assert hasattr(wandb, '__version__')  # verify package import not local dir
 except (ImportError, AssertionError):
@@ -105,14 +105,11 @@ def process_wandb_config_ddp_mode(opt):
 
 class WandbLogger():
     """Log training runs, datasets, models, and predictions to Weights & Biases.
-
     This logger sends information to W&B at wandb.ai. By default, this information
     includes hyperparameters, system configuration and metrics, model metrics,
     and basic data metrics and analyses.
-
     By providing additional command line arguments to train.py, datasets,
     models and predictions can also be logged.
-
     For more on how this logger is used, see the Weights & Biases documentation:
     https://docs.wandb.com/guides/integrations/yolov5
     """
@@ -122,12 +119,10 @@ class WandbLogger():
         - Initialize WandbLogger instance
         - Upload dataset if opt.upload_dataset is True
         - Setup trainig processes if job_type is 'Training'
-
         arguments:
         opt (namespace) -- Commandline arguments for this run
         run_id (str) -- Run ID of W&B run to be resumed
         job_type (str) -- To set the job_type for this run
-
        """
         # Pre-training routine --
         self.job_type = job_type
@@ -192,10 +187,8 @@ class WandbLogger():
     def check_and_upload_dataset(self, opt):
         """
         Check if the dataset format is compatible and upload it as W&B artifact
-
         arguments:
         opt (namespace)-- Commandline arguments for current run
-
         returns:
         Updated dataset info dictionary where local dataset paths are replaced by WAND_ARFACT_PREFIX links.
         """
@@ -213,10 +206,8 @@ class WandbLogger():
           - Attempt to download model checkpoint and dataset artifacts if opt.resume stats with WANDB_ARTIFACT_PREFIX
           - Update data_dict, to contain info of previous run if resumed and the paths of dataset artifact if downloaded
           - Setup log_dict, initialize bbox_interval
-
         arguments:
         opt (namespace) -- commandline arguments for this run
-
         """
         self.log_dict, self.current_epoch = {}, 0
         self.bbox_interval = opt.bbox_interval
@@ -260,11 +251,9 @@ class WandbLogger():
     def download_dataset_artifact(self, path, alias):
         """
         download the model checkpoint artifact if the path starts with WANDB_ARTIFACT_PREFIX
-
         arguments:
         path -- path of the dataset to be used for training
         alias (str)-- alias of the artifact to be download/used for training
-
         returns:
         (str, wandb.Artifact) -- path of the downladed dataset and it's corresponding artifact object if dataset
         is found otherwise returns (None, None)
@@ -280,7 +269,6 @@ class WandbLogger():
     def download_model_artifact(self, opt):
         """
         download the model checkpoint artifact if the resume path starts with WANDB_ARTIFACT_PREFIX
-
         arguments:
         opt (namespace) -- Commandline arguments for this run
         """
@@ -298,7 +286,6 @@ class WandbLogger():
     def log_model(self, path, opt, epoch, fitness_score, best_model=False):
         """
         Log the model checkpoint as W&B artifact
-
         arguments:
         path (Path)   -- Path of directory containing the checkpoints
         opt (namespace) -- Command line arguments for this run
@@ -322,14 +309,12 @@ class WandbLogger():
     def log_dataset_artifact(self, data_file, single_cls, project, overwrite_config=False):
         """
         Log the dataset as W&B artifact and return the new data file with W&B links
-
         arguments:
         data_file (str) -- the .yaml file with information about the dataset like - path, classes etc.
         single_class (boolean)  -- train multi-class data as single-class
         project (str) -- project name. Used to construct the artifact path
         overwrite_config (boolean) -- overwrites the data.yaml file if set to true otherwise creates a new
         file with _wandb postfix. Eg -> data_wandb.yaml
-
         returns:
         the new .yaml file with artifact links. it can be used to start training directly from artifacts
         """
@@ -389,12 +374,10 @@ class WandbLogger():
     def create_dataset_table(self, dataset: LoadImagesAndLabels, class_to_id: Dict[int, str], name: str = 'dataset'):
         """
         Create and return W&B artifact containing W&B Table of the dataset.
-
         arguments:
         dataset -- instance of LoadImagesAndLabels class used to iterate over the data to build Table
         class_to_id -- hash map that maps class ids to labels
         name -- name of the artifact
-
         returns:
         dataset artifact to be logged or used
         """
@@ -431,7 +414,6 @@ class WandbLogger():
     def log_training_progress(self, predn, path, names):
         """
         Build evaluation Table. Uses reference from validation dataset table.
-
         arguments:
         predn (list): list of predictions in the native space in the format - [xmin, ymin, xmax, ymax, confidence, class]
         path (str): local path of the current evaluation image
@@ -472,7 +454,6 @@ class WandbLogger():
     def val_one_image(self, pred, predn, path, names, im):
         """
         Log validation data for one image. updates the result Table if validation dataset is uploaded and log bbox media panel
-
         arguments:
         pred (list): list of scaled predictions in the format - [xmin, ymin, xmax, ymax, confidence, class]
         predn (list): list of predictions in the native space - [xmin, ymin, xmax, ymax, confidence, class]
@@ -494,7 +475,6 @@ class WandbLogger():
     def log(self, log_dict):
         """
         save the metrics to the logging dictionary
-
         arguments:
         log_dict (Dict) -- metrics/media to be logged in current step
         """
@@ -505,7 +485,6 @@ class WandbLogger():
     def end_epoch(self, best_result=False):
         """
         commit the log_dict, model artifacts and Tables to W&B and flush the log_dict.
-
         arguments:
         best_result (boolean): Boolean representing if the result of this evaluation is best or not
         """

@@ -1,6 +1,6 @@
 import argparse
 
-from wandb_utils import WandbLogger
+from wandb_utils import WandbLogger # type: ignore
 
 from utils.general import LOGGER
 

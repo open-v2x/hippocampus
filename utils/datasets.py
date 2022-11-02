@@ -17,14 +17,14 @@ from pathlib import Path
 from threading import Thread
 from zipfile import ZipFile
 
-import cv2
+import cv2 # type: ignore
 import numpy as np
 import torch
 import torch.nn.functional as F
-import yaml
-from PIL import ExifTags, Image, ImageOps
+# import yaml 
+from PIL import ExifTags, Image, ImageOps # type: ignore
 from torch.utils.data import DataLoader, Dataset, dataloader, distributed
-from tqdm import tqdm
+from tqdm import tqdm # type: ignore
 
 from utils.augmentations import Albumentations, augment_hsv, copy_paste, letterbox, mixup, random_perspective
 from utils.general import (LOGGER, NUM_THREADS, check_dataset, check_requirements, check_yaml, clean_str,
@@ -302,8 +302,8 @@ class LoadStreams:
             st = f'{i + 1}/{n}: {s}... '
             if 'youtube.com/' in s or 'youtu.be/' in s:  # if source is YouTube video
                 check_requirements(('pafy', 'youtube_dl'))
-                import pafy
-                s = pafy.new(s).getbest(preftype="mp4").url  # YouTube URL
+                # import pafy
+                # s = pafy.new(s).getbest(preftype="mp4").url  # YouTube URL
             s = eval(s) if s.isnumeric() else s  # i.e. s = '0' local webcam
             cap = cv2.VideoCapture(s)
             assert cap.isOpened(), f'{st}Failed to open {s}'
@@ -980,10 +980,10 @@ def dataset_stats(path='coco128.yaml', autodownload=False, verbose=False, profil
             cv2.imwrite(str(f_new), im)
 
     zipped, data_dir, yaml_path = unzip(Path(path))
-    with open(check_yaml(yaml_path), errors='ignore') as f:
-        data = yaml.safe_load(f)  # data dict
-        if zipped:
-            data['path'] = data_dir  # TODO: should this be dir.resolve()?
+    # with open(check_yaml(yaml_path), errors='ignore') as f:
+    #     data = yaml.safe_load(f)  # data dict
+    #     if zipped:
+    #         data['path'] = data_dir  # TODO: should this be dir.resolve()?
     check_dataset(data, autodownload)  # download dataset if missing
     hub_dir = Path(data['path'] + ('-hub' if hub else ''))
     stats = {'nc': data['nc'], 'names': data['names']}  # statistics dictionary

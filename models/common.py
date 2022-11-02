@@ -11,14 +11,14 @@ from collections import OrderedDict, namedtuple
 from copy import copy
 from pathlib import Path
 
-import cv2
+import cv2 # type: ignore
 import numpy as np
-import pandas as pd
-import requests
+import pandas as pd # type: ignore
+# import requests
 import torch
 import torch.nn as nn
-import yaml
-from PIL import Image
+# import yaml
+from PIL import Image # type: ignore
 from torch.cuda import amp
 
 from utils.datasets import exif_transpose, letterbox
@@ -300,9 +300,9 @@ class DetectMultiBackend(nn.Module):
         pt, jit, onnx, engine, tflite, pb, saved_model, coreml, xml = (suffix == x for x in suffixes)  # backends
         stride, names = 64, [f'class{i}' for i in range(1000)]  # assign defaults
         w = attempt_download(w)  # download if not local
-        if data:  # data.yaml path (optional)
-            with open(data, errors='ignore') as f:
-                names = yaml.safe_load(f)['names']  # class names
+        # if data:  # data.yaml path (optional)
+        #     with open(data, errors='ignore') as f:
+        #         names = yaml.safe_load(f)['names']  # class names
 
         if pt:  # PyTorch
             model = attempt_load(weights if isinstance(weights, list) else w, map_location=device)
@@ -320,75 +320,75 @@ class DetectMultiBackend(nn.Module):
             LOGGER.info(f'Loading {w} for ONNX OpenCV DNN inference...')
             check_requirements(('opencv-python>=4.5.4',))
             net = cv2.dnn.readNetFromONNX(w)
-        elif onnx:  # ONNX Runtime
-            LOGGER.info(f'Loading {w} for ONNX Runtime inference...')
-            cuda = torch.cuda.is_available()
-            check_requirements(('onnx', 'onnxruntime-gpu' if cuda else 'onnxruntime'))
-            import onnxruntime
-            providers = ['CUDAExecutionProvider', 'CPUExecutionProvider'] if cuda else ['CPUExecutionProvider']
-            session = onnxruntime.InferenceSession(w, providers=providers)
-        elif xml:  # OpenVINO
-            LOGGER.info(f'Loading {w} for OpenVINO inference...')
-            check_requirements(('openvino-dev',))  # requires openvino-dev: https://pypi.org/project/openvino-dev/
-            import openvino.inference_engine as ie
-            core = ie.IECore()
-            network = core.read_network(model=w, weights=Path(w).with_suffix('.bin'))  # *.xml, *.bin paths
-            executable_network = core.load_network(network, device_name='CPU', num_requests=1)
-        elif engine:  # TensorRT
-            LOGGER.info(f'Loading {w} for TensorRT inference...')
-            import tensorrt as trt  # https://developer.nvidia.com/nvidia-tensorrt-download
-            check_version(trt.__version__, '7.0.0', hard=True)  # require tensorrt>=7.0.0
-            Binding = namedtuple('Binding', ('name', 'dtype', 'shape', 'data', 'ptr'))
-            logger = trt.Logger(trt.Logger.INFO)
-            with open(w, 'rb') as f, trt.Runtime(logger) as runtime:
-                model = runtime.deserialize_cuda_engine(f.read())
-            bindings = OrderedDict()
-            for index in range(model.num_bindings):
-                name = model.get_binding_name(index)
-                dtype = trt.nptype(model.get_binding_dtype(index))
-                shape = tuple(model.get_binding_shape(index))
-                data = torch.from_numpy(np.empty(shape, dtype=np.dtype(dtype))).to(device)
-                bindings[name] = Binding(name, dtype, shape, data, int(data.data_ptr()))
-            binding_addrs = OrderedDict((n, d.ptr) for n, d in bindings.items())
-            context = model.create_execution_context()
-            batch_size = bindings['images'].shape[0]
-        elif coreml:  # CoreML
-            LOGGER.info(f'Loading {w} for CoreML inference...')
-            import coremltools as ct
-            model = ct.models.MLModel(w)
-        else:  # TensorFlow (SavedModel, GraphDef, Lite, Edge TPU)
-            if saved_model:  # SavedModel
-                LOGGER.info(f'Loading {w} for TensorFlow SavedModel inference...')
-                import tensorflow as tf
-                model = tf.keras.models.load_model(w)
-            elif pb:  # GraphDef https://www.tensorflow.org/guide/migrate#a_graphpb_or_graphpbtxt
-                LOGGER.info(f'Loading {w} for TensorFlow GraphDef inference...')
-                import tensorflow as tf
+        # elif onnx:  # ONNX Runtime
+        #     LOGGER.info(f'Loading {w} for ONNX Runtime inference...')
+        #     cuda = torch.cuda.is_available()
+        #     check_requirements(('onnx', 'onnxruntime-gpu' if cuda else 'onnxruntime'))
+        #     import onnxruntime
+        #     providers = ['CUDAExecutionProvider', 'CPUExecutionProvider'] if cuda else ['CPUExecutionProvider']
+        #     session = onnxruntime.InferenceSession(w, providers=providers)
+        # elif xml:  # OpenVINO
+        #     LOGGER.info(f'Loading {w} for OpenVINO inference...')
+        #     check_requirements(('openvino-dev',))  # requires openvino-dev: https://pypi.org/project/openvino-dev/
+        #     import openvino.inference_engine as ie
+        #     core = ie.IECore()
+        #     network = core.read_network(model=w, weights=Path(w).with_suffix('.bin'))  # *.xml, *.bin paths
+        #     executable_network = core.load_network(network, device_name='CPU', num_requests=1)
+        # elif engine:  # TensorRT
+        #     LOGGER.info(f'Loading {w} for TensorRT inference...')
+        #     import tensorrt as trt  # https://developer.nvidia.com/nvidia-tensorrt-download
+        #     check_version(trt.__version__, '7.0.0', hard=True)  # require tensorrt>=7.0.0
+        #     Binding = namedtuple('Binding', ('name', 'dtype', 'shape', 'data', 'ptr'))
+        #     logger = trt.Logger(trt.Logger.INFO)
+        #     with open(w, 'rb') as f, trt.Runtime(logger) as runtime:
+        #         model = runtime.deserialize_cuda_engine(f.read())
+        #     bindings = OrderedDict()
+        #     for index in range(model.num_bindings):
+        #         name = model.get_binding_name(index)
+        #         dtype = trt.nptype(model.get_binding_dtype(index))
+        #         shape = tuple(model.get_binding_shape(index))
+        #         data = torch.from_numpy(np.empty(shape, dtype=np.dtype(dtype))).to(device)
+        #         bindings[name] = Binding(name, dtype, shape, data, int(data.data_ptr()))
+        #     binding_addrs = OrderedDict((n, d.ptr) for n, d in bindings.items())
+        #     context = model.create_execution_context()
+        #     batch_size = bindings['images'].shape[0]
+        # elif coreml:  # CoreML
+        #     LOGGER.info(f'Loading {w} for CoreML inference...')
+        #     import coremltools as ct
+        #     model = ct.models.MLModel(w)
+        # else:  # TensorFlow (SavedModel, GraphDef, Lite, Edge TPU)
+        #     if saved_model:  # SavedModel
+        #         LOGGER.info(f'Loading {w} for TensorFlow SavedModel inference...')
+        #         import tensorflow as tf
+        #         model = tf.keras.models.load_model(w)
+        #     elif pb:  # GraphDef https://www.tensorflow.org/guide/migrate#a_graphpb_or_graphpbtxt
+        #         LOGGER.info(f'Loading {w} for TensorFlow GraphDef inference...')
+        #         import tensorflow as tf
 
-                def wrap_frozen_graph(gd, inputs, outputs):
-                    x = tf.compat.v1.wrap_function(lambda: tf.compat.v1.import_graph_def(gd, name=""), [])  # wrapped
-                    return x.prune(tf.nest.map_structure(x.graph.as_graph_element, inputs),
-                                   tf.nest.map_structure(x.graph.as_graph_element, outputs))
+        #         def wrap_frozen_graph(gd, inputs, outputs):
+        #             x = tf.compat.v1.wrap_function(lambda: tf.compat.v1.import_graph_def(gd, name=""), [])  # wrapped
+        #             return x.prune(tf.nest.map_structure(x.graph.as_graph_element, inputs),
+        #                            tf.nest.map_structure(x.graph.as_graph_element, outputs))
 
-                graph_def = tf.Graph().as_graph_def()
-                graph_def.ParseFromString(open(w, 'rb').read())
-                frozen_func = wrap_frozen_graph(gd=graph_def, inputs="x:0", outputs="Identity:0")
-            elif tflite:  # https://www.tensorflow.org/lite/guide/python#install_tensorflow_lite_for_python
-                if 'edgetpu' in w.lower():  # Edge TPU
-                    LOGGER.info(f'Loading {w} for TensorFlow Lite Edge TPU inference...')
-                    import tflite_runtime.interpreter as tfli  # install https://coral.ai/software/#edgetpu-runtime
-                    delegate = {'Linux': 'libedgetpu.so.1',
-                                'Darwin': 'libedgetpu.1.dylib',
-                                'Windows': 'edgetpu.dll'}[platform.system()]
-                    interpreter = tfli.Interpreter(model_path=w, experimental_delegates=[tfli.load_delegate(delegate)])
-                else:  # Lite
-                    LOGGER.info(f'Loading {w} for TensorFlow Lite inference...')
-                    import tensorflow as tf
-                    interpreter = tf.lite.Interpreter(model_path=w)  # load TFLite model
-                interpreter.allocate_tensors()  # allocate
-                input_details = interpreter.get_input_details()  # inputs
-                output_details = interpreter.get_output_details()  # outputs
-        self.__dict__.update(locals())  # assign all variables to self
+        #         graph_def = tf.Graph().as_graph_def()
+        #         graph_def.ParseFromString(open(w, 'rb').read())
+        #         frozen_func = wrap_frozen_graph(gd=graph_def, inputs="x:0", outputs="Identity:0")
+        #     elif tflite:  # https://www.tensorflow.org/lite/guide/python#install_tensorflow_lite_for_python
+        #         if 'edgetpu' in w.lower():  # Edge TPU
+        #             LOGGER.info(f'Loading {w} for TensorFlow Lite Edge TPU inference...')
+        #             import tflite_runtime.interpreter as tfli  # install https://coral.ai/software/#edgetpu-runtime
+        #             delegate = {'Linux': 'libedgetpu.so.1',
+        #                         'Darwin': 'libedgetpu.1.dylib',
+        #                         'Windows': 'edgetpu.dll'}[platform.system()]
+        #             interpreter = tfli.Interpreter(model_path=w, experimental_delegates=[tfli.load_delegate(delegate)])
+        #         else:  # Lite
+        #             LOGGER.info(f'Loading {w} for TensorFlow Lite inference...')
+        #             import tensorflow as tf
+        #             interpreter = tf.lite.Interpreter(model_path=w)  # load TFLite model
+        #         interpreter.allocate_tensors()  # allocate
+        #         input_details = interpreter.get_input_details()  # inputs
+        #         output_details = interpreter.get_output_details()  # outputs
+        # self.__dict__.update(locals())  # assign all variables to self
 
     def forward(self, im, augment=False, visualize=False, val=False):
         # YOLOv5 MultiBackend inference
@@ -512,12 +512,12 @@ class AutoShape(nn.Module):
         shape0, shape1, files = [], [], []  # image and inference shapes, filenames
         for i, im in enumerate(imgs):
             f = f'image{i}'  # filename
-            if isinstance(im, (str, Path)):  # filename or uri
-                im, f = Image.open(requests.get(im, stream=True).raw if str(im).startswith('http') else im), im
-                im = np.asarray(exif_transpose(im))
-            elif isinstance(im, Image.Image):  # PIL Image
-                im, f = np.asarray(exif_transpose(im)), getattr(im, 'filename', f) or f
-            files.append(Path(f).with_suffix('.jpg').name)
+            # if isinstance(im, (str, Path)):  # filename or uri
+            #     im, f = Image.open(requests.get(im, stream=True).raw if str(im).startswith('http') else im), im
+            #     im = np.asarray(exif_transpose(im))
+            # elif isinstance(im, Image.Image):  # PIL Image
+            #     im, f = np.asarray(exif_transpose(im)), getattr(im, 'filename', f) or f
+            # files.append(Path(f).with_suffix('.jpg').name)
             if im.shape[0] < 5:  # image in CHW
                 im = im.transpose((1, 2, 0))  # reverse dataloader .transpose(2, 0, 1)
             im = im[..., :3] if im.ndim == 3 else np.tile(im[..., None], 3)  # enforce 3ch input

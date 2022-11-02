@@ -7,7 +7,7 @@ import os
 import warnings
 from threading import Thread
 
-import pkg_resources as pkg
+# import pkg_resources as pkg
 import torch
 from torch.utils.tensorboard import SummaryWriter
 
@@ -19,19 +19,19 @@ from utils.torch_utils import de_parallel
 LOGGERS = ('csv', 'tb', 'wandb')  # text-file, TensorBoard, Weights & Biases
 RANK = int(os.getenv('RANK', -1))
 
-try:
-    import wandb
+# try:
+#     import wandb
 
-    assert hasattr(wandb, '__version__')  # verify package import not local dir
-    if pkg.parse_version(wandb.__version__) >= pkg.parse_version('0.12.2') and RANK in [0, -1]:
-        try:
-            wandb_login_success = wandb.login(timeout=30)
-        except wandb.errors.UsageError:  # known non-TTY terminal issue
-            wandb_login_success = False
-        if not wandb_login_success:
-            wandb = None
-except (ImportError, AssertionError):
-    wandb = None
+#     assert hasattr(wandb, '__version__')  # verify package import not local dir
+#     if pkg.parse_version(wandb.__version__) >= pkg.parse_version('0.12.2') and RANK in [0, -1]:
+#         try:
+#             wandb_login_success = wandb.login(timeout=30)
+#         except wandb.errors.UsageError:  # known non-TTY terminal issue
+#             wandb_login_success = False
+#         if not wandb_login_success:
+#             wandb = None
+# except (ImportError, AssertionError):
+#     wandb = None
 
 
 class Loggers():
@@ -147,7 +147,7 @@ class Loggers():
         files = [(self.save_dir / f) for f in files if (self.save_dir / f).exists()]  # filter
 
         if self.tb:
-            import cv2
+            import cv2 # type: ignore
             for f in files:
                 self.tb.add_image(f.stem, cv2.imread(str(f))[..., ::-1], epoch, dataformats='HWC')
 
