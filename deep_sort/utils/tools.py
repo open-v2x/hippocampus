@@ -11,7 +11,7 @@ def is_video(ext: str):
     Returns:
     """
 
-    allowed_exts = ('.mp4', '.webm', '.ogg', '.avi', '.wmv', '.mkv', '.3gp')
+    allowed_exts = (".mp4", ".webm", ".ogg", ".avi", ".wmv", ".mkv", ".3gp")
     return any((ext.endswith(x) for x in allowed_exts))
 
 
@@ -22,6 +22,7 @@ def tik_tok(func):
         func:
     Returns:
     """
+
     @wraps(func)
     def _time_it(*args, **kwargs):
         start = time()
