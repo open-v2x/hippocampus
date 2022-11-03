@@ -1,7 +1,7 @@
 """Perform test request"""
 import pprint
 
-import requests
+import requests  # type:ignore
 
 DETECTION_URL = "http://localhost:5000/v1/object-detection/yolov5s"
 TEST_IMAGE = "zidane.jpg"

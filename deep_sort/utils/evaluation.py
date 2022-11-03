@@ -1,13 +1,14 @@
-import os
-import numpy as np
 import copy
+import os
+
 import motmetrics as mm
-mm.lap.default_solver = 'lap'
+import numpy as np
+
+mm.lap.default_solver = "lap"
 from utils.io import read_results, unzip_objs
 
 
 class Evaluator(object):
-
     def __init__(self, data_root, seq_name, data_type):
         self.data_root = data_root
         self.seq_name = seq_name
@@ -17,9 +18,9 @@ class Evaluator(object):
         self.reset_accumulator()
 
     def load_annotations(self):
-        assert self.data_type == 'mot'
+        assert self.data_type == "mot"
 
-        gt_filename = os.path.join(self.data_root, self.seq_name, 'gt', 'gt.txt')
+        gt_filename = os.path.join(self.data_root, self.seq_name, "gt", "gt.txt")
         self.gt_frame_dict = read_results(gt_filename, self.data_type, is_gt=True)
         self.gt_ignore_frame_dict = read_results(gt_filename, self.data_type, is_ignore=True)
 
@@ -38,7 +39,6 @@ class Evaluator(object):
         # ignore boxes
         ignore_objs = self.gt_ignore_frame_dict.get(frame_id, [])
         ignore_tlwhs = unzip_objs(ignore_objs)[0]
-
 
         # remove ignored results
         keep = np.ones(len(trk_tlwhs), dtype=bool)
@@ -60,8 +60,10 @@ class Evaluator(object):
         # acc
         self.acc.update(gt_ids, trk_ids, iou_distance)
 
-        if rtn_events and iou_distance.size > 0 and hasattr(self.acc, 'last_mot_events'):
-            events = self.acc.last_mot_events  # only supported by https://github.com/longcw/py-motmetrics
+        if rtn_events and iou_distance.size > 0 and hasattr(self.acc, "last_mot_events"):
+            events = (
+                self.acc.last_mot_events
+            )  # only supported by https://github.com/longcw/py-motmetrics
         else:
             events = None
         return events
@@ -79,25 +81,23 @@ class Evaluator(object):
         return self.acc
 
     @staticmethod
-    def get_summary(accs, names, metrics=('mota', 'num_switches', 'idp', 'idr', 'idf1', 'precision', 'recall')):
+    def get_summary(
+        accs, names, metrics=("mota", "num_switches", "idp", "idr", "idf1", "precision", "recall")
+    ):
         names = copy.deepcopy(names)
         if metrics is None:
             metrics = mm.metrics.motchallenge_metrics
         metrics = copy.deepcopy(metrics)
 
         mh = mm.metrics.create()
-        summary = mh.compute_many(
-            accs,
-            metrics=metrics,
-            names=names,
-            generate_overall=True
-        )
+        summary = mh.compute_many(accs, metrics=metrics, names=names, generate_overall=True)
 
         return summary
 
     @staticmethod
     def save_summary(summary, filename):
         import pandas as pd
+
         writer = pd.ExcelWriter(filename)
         summary.to_excel(writer)
         writer.save()
