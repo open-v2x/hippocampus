@@ -6,6 +6,10 @@ Usage:
     $ python path/to/models/yolo.py --cfg yolov5s.yaml
 """
 
+""" 
+isort:skip_file
+"""
+
 import argparse
 import sys
 from copy import deepcopy

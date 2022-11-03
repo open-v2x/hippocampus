@@ -10,6 +10,10 @@ Export:
     $ python path/to/export.py --weights yolov5s.pt --include saved_model pb tflite tfjs
 """
 
+""" 
+isort:skip_file
+"""
+
 import argparse
 import sys
 from copy import deepcopy
