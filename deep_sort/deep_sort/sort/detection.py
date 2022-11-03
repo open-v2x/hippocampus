@@ -2,7 +2,6 @@ import numpy as np
 
 
 class Detection(object):
-
     def __init__(self, tlwh, cls_, confidence, feature):
         self.tlwh = np.asarray(tlwh, dtype=np.float)
         self.cls_ = cls_

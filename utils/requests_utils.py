@@ -1,5 +1,7 @@
-import requests
 import json
+
+import requests  # type:ignore
+
 
 def post(url):
     data = ""
@@ -7,9 +9,9 @@ def post(url):
         return data
     try:
         res = requests.get(url).json()
-        if isinstance(res,dict):
-            if res.get("status","")==200:
-                return res.get("data","")
+        if isinstance(res, dict):
+            if res.get("status", "") == 200:
+                return res.get("data", "")
             else:
                 return data
         else:
@@ -18,7 +20,8 @@ def post(url):
         print(error)
         return data
 
-if __name__=="__main__":
-    url="http://localhost:8090/control/get?room=test"
-    data=post(url)
+
+if __name__ == "__main__":
+    url = "http://localhost:8090/control/get?room=test"
+    data = post(url)
     print("rtmp://localhost:1935/live/" + data)
