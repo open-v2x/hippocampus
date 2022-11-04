@@ -53,7 +53,7 @@ jobs:
             cameras=(`cat default.yml | grep "camera_id" | awk '{print $3}'`)
             rtsp_urls=(`cat default.yml | grep "rtsp" | awk '{print $3}'`)
           
-            containers=(ffmpeg rtsp_simple_server lalserver)
+            containers=(ffmpeg rtsp-simple-server lalserver)
             to_delete=(${containers[@]}  ${container_names[@]})
             for i in ${to_delete[@]}; do
               docker stop $i 2>/dev/null || true
