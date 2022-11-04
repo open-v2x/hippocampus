@@ -59,12 +59,12 @@ jobs:
               docker stop $i 2>/dev/null || true
               docker rm $i 2>/dev/null || true
             done
-            docker rmi pull registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
+            docker rmi registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
             docker images | grep none | awk '{print $3}' | xargs -I{} docker rmi -f {}
           
-            docker run -d -p 1935:1935 -p 7001:8080 --restart=on-failure --name=lalserver q191201771/lal /lal/bin/lalserver -c /lal/conf/lalserver.conf.json
-            docker run -d -v ~/Videos/test.mp4:/tmp/workdir/test.mp4 --restart=on-failure --name=ffmpeg --net=host jrottenberg/ffmpeg -re -stream_loop -1 -i /tmp/workdir/test.mp4 -r 25 -c:v libx264 -s 1920x1080 -rtsp_transport tcp -f rtsp rtsp://localhost:8554/mystream
-            docker run -d -e RTSP_PROTOCOLS=tcp -p 8554:8554 --restart=on-failure --name=rtsp-simple-server aler9/rtsp-simple-server
+            docker run -d -p 1935:1935 -p 7001:8080 --restart=always --name=lalserver q191201771/lal /lal/bin/lalserver -c /lal/conf/lalserver.conf.json
+            docker run -d -v ~/Videos/test.mp4:/tmp/workdir/test.mp4 --restart=always --name=ffmpeg --net=host jrottenberg/ffmpeg -re -stream_loop -1 -i /tmp/workdir/test.mp4 -r 25 -c:v libx264 -s 1920x1080 -rtsp_transport tcp -f rtsp rtsp://localhost:8554/mystream
+            docker run -d -e RTSP_PROTOCOLS=tcp -p 8554:8554 --restart=always --name=rtsp-simple-server aler9/rtsp-simple-server
 
             docker pull registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
             for i in ${#cameras[@]}; do
