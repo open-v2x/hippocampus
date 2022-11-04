@@ -45,28 +45,34 @@ jobs:
           port: ${{ secrets.LAB_PORT }}
           script: |
             set -e
-
-            array1=("lalserver" "hippocampus")
-            array2=(`cat config/default.yml | grep "emulator" | awk '{print $2}'`)
-            videos=(`cat config/default.yml | grep "video" | awk '{print $2}'`)
-            ports=(`cat config/default.yml | grep "port" | awk '{print $2}'`)
-            array_new=(${array1[@]} ${array2[*]})
-
-            for(( i=0;i<${#array_new[@]};i++))
-            do
-                docker stop ${array_new[i]} || true
-                docker rm -f ${array_new[i]} || true
-            done;
-
-            docker run -d -p 1935:1935 -p 7001:8080 --name=lalserver q191201771/lal /lal/bin/lalserver -c /lal/conf/lalserver.conf.json
-
-            for(( i=0;i<${#array2[@]};i++))
-            do
-              docker run -v ~/Videos/${videos[i]}:/${videos[i]}  --rm -p ${ports[i]}:8554 -d --name=${array2[i]} steabert/gst-rtsp-launch "filesrc location=/${videos[i]} ! decodebin ! x264enc ! rtph264pay name=pay0 pt=96"
-            done;
+          
+          # download config file and get env variables
+            rm -rf /tmp/config
+            mkdir /tmp/config && cd /tmp/config
+            wget https://raw.githubusercontent.com/open-v2x/hippocampus/master/config/default.yml
+            container_names=(`cat default.yml | grep "container_name" | awk '{print $3}'`)
+            cameras=(`cat default.yml | grep "camera_id" | awk '{print $3}'`)
+            rtsp_urls=(`cat default.yml | grep "rtsp" | awk '{print $3}'`)
+          
+          # remove containers and images
+            containers=(ffmpeg rtsp_simple_server lalserver)
+            to_delete=(${containers[@]}  ${container_names[@]})
+            for i in ${to_delete[@]}; do
+              docker stop $i 2>/dev/null || true
+              docker rm $i 2>/dev/null || true
+            done
+            docker rmi pull registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
+            docker images | grep none | awk '{print $3}' | xargs -I{} docker rmi -f {}
+          
+          # pull new image and run new containers
+            docker run -d -p 1935:1935 -p 7001:8080 --restart=on-failure --name=lalserver q191201771/lal /lal/bin/lalserver -c /lal/conf/lalserver.conf.json
+            docker run -d -v ~/Videos/test.mp4:/tmp/workdir/test.mp4 --restart=on-failure --name=ffmpeg --net=host jrottenberg/ffmpeg -re -stream_loop -1 -i /tmp/workdir/test.mp4 -r 25 -c:v libx264 -s 1920x1080 -rtsp_transport tcp -f rtsp rtsp://localhost:8554/mystream
+            docker run -d -e RTSP_PROTOCOLS=tcp -p 8554:8554 --restart=on-failure --name=rtsp-simple-server aler9/rtsp-simple-server
 
             docker pull registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
-            nvidia-docker run -d --restart=always --name=hippocampus --gpus all --net=host registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
+            for i in ${#cameras[@]}; do
+              nvidia-docker run -d --restart=always --name=${container_names[i]} -e ${cameras[i]} -e ${rtsp_urls[i]} --gpus all --net=host registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
+            done
 
   acr:
       needs: docker

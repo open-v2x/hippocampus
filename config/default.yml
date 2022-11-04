@@ -1,17 +1,12 @@
-R328328:
+cam_1:
+  - container_name: hippocampus_1
   - camera_id: 'cam_1'
-    rtsp: rtsp://127.0.0.1:8554/mystream
-    emulator: gst-rtsp-launch-1
-    video: test.flv
-    port: 8554
+  - rtsp: 'rtsp://127.0.0.1:8554/mystream'
+cam_2:
+  - container_name: hippocampus_2
   - camera_id: 'cam_2'
-    rtsp: rtsp://127.0.0.1:8554/mystream
-    emulator: gst-rtsp-launch-2
-    video: test1.flv
-    port: 8553
-R329329:
+  - rtsp: 'rtsp://127.0.0.1:8554/mystream'
+cam_3:
+  - container_name: hippocampus_3
   - camera_id: 'cam_3'
-    rtsp: rtsp://127.0.0.1:8554/mystream
-    emulator: gst-rtsp-launch-3
-    video: traffic_2.flv
-    port: 8552
+  - rtsp: 'rtsp://127.0.0.1:8554/mystream'
