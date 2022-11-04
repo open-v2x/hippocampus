@@ -32,8 +32,24 @@ jobs:
             REPO_URL=https://github.com/open-v2x/hippocampus
             GIT_COMMIT=${{ github.sha }}
 
-  ssh:
-    needs: docker
+  acr:
+      needs: docker
+      runs-on: ubuntu-latest
+      steps:
+        - name: sync image to ACR
+          uses: appleboy/ssh-action@master
+          with:
+            host: ${{ secrets.AIO_MASTER_HOST }}
+            username: ${{ secrets.AIO_MASTER_USERNAME }}
+            key: ${{ secrets.AIO_MASTER_KEY }}
+            port: ${{ secrets.AIO_MASTER_PORT }}
+            script: |
+              docker pull openv2x/hippocampus:latest
+              docker tag openv2x/hippocampus:latest registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
+              docker push registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
+
+ssh:
+    needs: acr
     runs-on: ubuntu-latest
     steps:
       - name: apply to cicd environment
@@ -70,19 +86,3 @@ jobs:
             for((i=0;i<${#cameras[@]};i++)); do
               nvidia-docker run -d --restart=always --name=${container_names[i]} -e camera_id=${cameras[i]} -e rtsp=${rtsp_urls[i]} --gpus all --net=host registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
             done
-
-  acr:
-      needs: docker
-      runs-on: ubuntu-latest
-      steps:
-        - name: sync image to ACR
-          uses: appleboy/ssh-action@master
-          with:
-            host: ${{ secrets.AIO_MASTER_HOST }}
-            username: ${{ secrets.AIO_MASTER_USERNAME }}
-            key: ${{ secrets.AIO_MASTER_KEY }}
-            port: ${{ secrets.AIO_MASTER_PORT }}
-            script: |
-              docker pull openv2x/hippocampus:latest
-              docker tag openv2x/hippocampus:latest registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
-              docker push registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest

@@ -10,8 +10,8 @@
 
 - [hippocampus 入门开发文档](#hippocampus-入门开发文档)
   - [1. 开发环境及工具](#1-开发环境及工具)
-  - [2. hippocampus 部署](#2-hippocampus-部署)
-  - [3. 本地调试](#3-本地调试)
+  - [2. hippocampus 调试](#2-hippocampus-调试)
+  - [3. 其它参考](#3-其它参考)
 
 <!-- code_chunk_output -->
 
@@ -103,7 +103,7 @@ Test PASSED
 Done
 ```
 
-## 2. Hippocampus 部署
+## 2. Hippocampus 调试
 
 ### 2.1 Hippocampus 开发环境准备
 
@@ -161,15 +161,20 @@ python3 -m virtualenv -p python3.8 .venv
 # 安装依赖
 pip install -r requirements.txt
 # 启动服务
-export rtsp=rtsp://localhost:8554/mystream
+export rtsp=rtsp://172.17.0.1:8554/mystream
+export camera_id=cam_1
 python main.py
 ```
 
 如果 main.py 报错，先检查下 rtsp 流是否正常。
 
+### 2.4 查看视频流
+
+VLC 访问 `rtmp://<external-ip>:1935/live/cam_1.flv`，以及 `http://<external-ip>:8088/live/cam_1.flv`
+
 ## 3. 其它参考
 
-1. ffmpeg 推流调试
+### 3.1 ffmpeg 直接通过文件推 RTMP 流到直播服务
 
 参考 <https://zhc3o5gmf9.feishu.cn/docx/doxcnNrfygF4WnWVYhCygILsuqd>
 
@@ -178,7 +183,3 @@ ffmpeg -re -stream_loop -1 -i /root/test.mp4 -r 25 -c:v libx264 -s 480x270 -f fl
 ```
 
 vlc 可以访问 <rtmp://localhost:1935/live/result>
-
-2. hippocampus 算法处理 test.mp4 文件并进行推流调试
-
-hippocampus 运行起来，vlc或者网页 访问 <http://localhost:7001/live/cam_1.flv>
