@@ -46,7 +46,6 @@ jobs:
           script: |
             set -e
           
-          # download config file and get env variables
             rm -rf /tmp/config
             mkdir /tmp/config && cd /tmp/config
             wget https://raw.githubusercontent.com/open-v2x/hippocampus/master/config/default.yml
@@ -54,7 +53,6 @@ jobs:
             cameras=(`cat default.yml | grep "camera_id" | awk '{print $3}'`)
             rtsp_urls=(`cat default.yml | grep "rtsp" | awk '{print $3}'`)
           
-          # remove containers and images
             containers=(ffmpeg rtsp_simple_server lalserver)
             to_delete=(${containers[@]}  ${container_names[@]})
             for i in ${to_delete[@]}; do
@@ -64,7 +62,6 @@ jobs:
             docker rmi pull registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
             docker images | grep none | awk '{print $3}' | xargs -I{} docker rmi -f {}
           
-          # pull new image and run new containers
             docker run -d -p 1935:1935 -p 7001:8080 --restart=on-failure --name=lalserver q191201771/lal /lal/bin/lalserver -c /lal/conf/lalserver.conf.json
             docker run -d -v ~/Videos/test.mp4:/tmp/workdir/test.mp4 --restart=on-failure --name=ffmpeg --net=host jrottenberg/ffmpeg -re -stream_loop -1 -i /tmp/workdir/test.mp4 -r 25 -c:v libx264 -s 1920x1080 -rtsp_transport tcp -f rtsp rtsp://localhost:8554/mystream
             docker run -d -e RTSP_PROTOCOLS=tcp -p 8554:8554 --restart=on-failure --name=rtsp-simple-server aler9/rtsp-simple-server
