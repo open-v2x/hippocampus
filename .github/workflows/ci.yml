@@ -33,22 +33,22 @@ jobs:
             GIT_COMMIT=${{ github.sha }}
 
   acr:
-      needs: docker
-      runs-on: ubuntu-latest
-      steps:
-        - name: sync image to ACR
-          uses: appleboy/ssh-action@master
-          with:
-            host: ${{ secrets.AIO_MASTER_HOST }}
-            username: ${{ secrets.AIO_MASTER_USERNAME }}
-            key: ${{ secrets.AIO_MASTER_KEY }}
-            port: ${{ secrets.AIO_MASTER_PORT }}
-            script: |
-              docker pull openv2x/hippocampus:latest
-              docker tag openv2x/hippocampus:latest registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
-              docker push registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
+    needs: docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: sync image to ACR
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AIO_MASTER_HOST }}
+          username: ${{ secrets.AIO_MASTER_USERNAME }}
+          key: ${{ secrets.AIO_MASTER_KEY }}
+          port: ${{ secrets.AIO_MASTER_PORT }}
+          script: |
+            docker pull openv2x/hippocampus:latest
+            docker tag openv2x/hippocampus:latest registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
+            docker push registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
 
-ssh:
+  ssh:
     needs: acr
     runs-on: ubuntu-latest
     steps:
