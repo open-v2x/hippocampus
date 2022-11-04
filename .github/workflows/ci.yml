@@ -59,7 +59,7 @@ jobs:
               docker stop $i 2>/dev/null || true
               docker rm $i 2>/dev/null || true
             done
-            docker rmi registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
+            docker rmi registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest || true
             docker images | grep none | awk '{print $3}' | xargs -I{} docker rmi -f {}
           
             docker run -d -p 1935:1935 -p 7001:8080 --restart=always --name=lalserver q191201771/lal /lal/bin/lalserver -c /lal/conf/lalserver.conf.json
