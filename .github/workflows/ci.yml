@@ -67,8 +67,8 @@ jobs:
             docker run -d -e RTSP_PROTOCOLS=tcp -p 8554:8554 --restart=always --name=rtsp-simple-server aler9/rtsp-simple-server
 
             docker pull registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
-            for i in ${#cameras[@]}; do
-              nvidia-docker run -d --restart=always --name=${container_names[i]} -e ${cameras[i]} -e ${rtsp_urls[i]} --gpus all --net=host registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
+            for((i=0;i<${#cameras[@]};i++)); do
+              nvidia-docker run -d --restart=always --name=${container_names[i]} -e camera_id=${cameras[i]} -e rtsp=${rtsp_urls[i]} --gpus all --net=host registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
             done
 
   acr:
