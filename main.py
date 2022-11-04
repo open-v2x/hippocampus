@@ -1,6 +1,8 @@
 import os
 import subprocess
+
 import cv2
+
 from detector import Detector
 from tracker import plot_bboxes
 
