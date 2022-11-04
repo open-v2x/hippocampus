@@ -7,7 +7,6 @@ import yaml
 
 from detector import Detector
 from tracker import plot_bboxes
-from utils.requests_utils import post
 
 
 def func(camera):

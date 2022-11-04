@@ -5,17 +5,17 @@ from pathlib import Path
 import numpy as np
 import torch
 
-FILE = Path(__file__).resolve()
-ROOT = FILE.parents[0]  # YOLOv5 root directory
-if str(ROOT) not in sys.path:
-    sys.path.append(str(ROOT))  # add ROOT to PATH
-ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
-
 from BaseDetector import baseDet
 from models.common import DetectMultiBackend
 from utils.datasets import letterbox
 from utils.general import check_img_size, non_max_suppression, scale_coords
 from utils.torch_utils import select_device
+
+FILE = Path(__file__).resolve()
+ROOT = FILE.parents[0]  # YOLOv5 root directory
+if str(ROOT) not in sys.path:
+    sys.path.append(str(ROOT))  # add ROOT to PATH
+ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
 
 class Detector(baseDet):
@@ -46,6 +46,7 @@ class Detector(baseDet):
         )
         self.stride = 32
         imgsz = check_img_size(self.imgsz, s=stride)  # check image size
+        print(imgsz)
 
         # Half
         self.half &= (
@@ -95,7 +96,7 @@ class Detector(baseDet):
 
                 for *x, conf, cls_id in det:
                     lbl = self.names[int(cls_id)]
-                    if not lbl in ["person", "car", "truck"]:
+                    if lbl not in ["person", "car", "truck"]:
                         continue
                     x1, y1 = int(x[0]), int(x[1])
                     x2, y2 = int(x[2]), int(x[3])
