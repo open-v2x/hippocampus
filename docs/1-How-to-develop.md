@@ -168,6 +168,40 @@ python main.py
 
 如果 main.py 报错，先检查下 rtsp 流是否正常。
 
+1. 可以通过 VLC 检查 rtsp 流是否正常可以访问
+2. 可以看 `rtsp-simple-server` 容器的日志 `docker logs -f rtsp-simple-server`
+
+   正常流收入：
+
+   ```log
+   2022/11/05 11:48:41 INF [RTSP] [session 641310733] opened by 172.17.0.1:40388
+   2022/11/05 11:48:41 INF [RTSP] [session 641310733] is publishing to path 'mystream', 2 tracks with TCP
+   2022/11/05 11:48:51 INF [RTSP] [conn 172.17.0.1:57138] opened
+   2022/11/05 11:48:51 INF [RTSP] [session 740411152] opened by 172.17.0.1:57138
+   2022/11/05 11:48:51 INF [RTSP] [session 740411152] is reading from path 'mystream', 2 tracks with TCP
+   ```
+
+   ffmpeg 推 rtsp 流停止
+
+   ```log
+   2022/11/05 12:26:02 INF [RTSP] [conn 172.17.0.1:40388] closed (EOF)
+   2022/11/05 12:26:02 INF [RTSP] [session 641310733] closed (not in use)
+   2022/11/05 12:26:02 INF [RTSP] [conn 172.17.0.1:57138] closed (terminated)
+   2022/11/05 12:26:02 INF [RTSP] [session 740411152] closed (terminated)
+   ```
+
+   有 rtsp 流请求，但没有 ffmpeg 推流进来
+
+   ```log
+   2022/11/05 12:26:13 INF [RTSP] [conn 172.17.0.1:46222] opened
+   2022/11/05 12:26:13 INF [RTSP] [conn 172.17.0.1:46222] closed (no one is publishing to path 'mystream')
+   2022/11/05 12:26:20 INF [RTSP] [conn 172.17.0.1:33468] opened
+   2022/11/05 12:26:20 INF [RTSP] [conn 172.17.0.1:33468] closed (no one is publishing to path 'mystream')
+   2022/11/05 12:26:28 INF [RTSP] [conn 172.17.0.1:57958] opened
+   ```
+
+3. 看 hippocampus 和 aaffmpeg 容器（或进程）运行情况，应该保持 running，异常 crash 就要看一下日志
+
 ### 2.4 查看视频流
 
 VLC 访问 `rtmp://<external-ip>:1935/live/cam_1.flv`，以及 `http://<external-ip>:8088/live/cam_1.flv`
