@@ -26,4 +26,4 @@ Dockerfile
 
 #Ignoring all the markdown and class files
 **/*.md
-doc
+docs
