@@ -1,5 +1,6 @@
 import os
 import subprocess
+import time
 
 import cv2
 
@@ -48,7 +49,8 @@ def main():
     while True:
         ret, im = cap.read()
         if not ret:
-            break
+            time.sleep(1)
+            continue
         if i == 0:
             bboxes.clear()
             result = det.feedCap(im)
@@ -61,10 +63,9 @@ def main():
             else:
                 frame = im
         pipe.stdin.write(frame.tobytes())
-        i = i + 1
-        i = i % count
+        i = (i + 1) % count
 
-    cap.release()
+    # cap.release()
 
 
 if __name__ == "__main__":
