@@ -1,6 +1,5 @@
 import os
 import subprocess
-import time
 
 import cv2
 
@@ -55,7 +54,7 @@ def main():
             try:
                 result = det.feedCap(im)
             except Exception as e:
-                print(f'[ERROR]:: {e}')
+                print(f"[ERROR]:: {e}")
             else:
                 frame = result["frame"]
                 if result["bboxes2draw"]:
