@@ -5,8 +5,8 @@ cam_1:
 cam_2:
   - container_name: hippocampus_2
   - camera_id: cam_2
-  - rtsp: rtsp://localhost:8554/mystream
+  - rtsp: rtsp://localhost:8555/mystream
 cam_3:
   - container_name: hippocampus_3
   - camera_id: cam_3
-  - rtsp: rtsp://localhost:8554/mystream
+  - rtsp: rtsp://localhost:8556/mystream

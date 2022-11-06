@@ -51,14 +51,18 @@ def main():
             break
         if i == 0:
             bboxes.clear()
-            try:
-                result = det.feedCap(im)
-            except Exception as e:
-                print(f"[ERROR]:: {e}")
-            else:
-                frame = result["frame"]
-                if result["bboxes2draw"]:
-                    bboxes.append(result["bboxes2draw"])
+            result = det.feedCap(im)
+            frame = result["frame"]
+            if result["bboxes2draw"]:
+                bboxes.append(result["bboxes2draw"])
+            # try:
+            #     result = det.feedCap(im)
+            # except Exception as e:
+            #     print(f"[ERROR]:: {e}")
+            # else:
+            #     frame = result["frame"]
+            #     if result["bboxes2draw"]:
+            #         bboxes.append(result["bboxes2draw"])
         else:
             if bboxes:
                 frame = plot_bboxes(im, bboxes[0])
