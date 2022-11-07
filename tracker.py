@@ -58,17 +58,18 @@ def update_tracker(target_detector, image):
     confs = []
     clss = []
 
-    for x1, y1, x2, y2, cls_id, conf in bboxes:
+    if len(bboxes):
+        for x1, y1, x2, y2, cls_id, conf in bboxes:
 
-        obj = [int((x1 + x2) / 2), int((y1 + y2) / 2), x2 - x1, y2 - y1]
-        bbox_xywh.append(obj)
-        confs.append(conf)
-        clss.append(cls_id)
+            obj = [int((x1 + x2) / 2), int((y1 + y2) / 2), x2 - x1, y2 - y1]
+            bbox_xywh.append(obj)
+            confs.append(conf)
+            clss.append(cls_id)
 
-    xywhs = torch.Tensor(bbox_xywh)
-    confss = torch.Tensor(confs)
+        xywhs = torch.Tensor(bbox_xywh)
+        confss = torch.Tensor(confs)
 
-    outputs = deepsort.update(xywhs, confss, clss, image)
+        outputs = deepsort.update(xywhs, confss, clss, image)
 
     bboxes2draw = []
     face_bboxes = []
