@@ -74,16 +74,17 @@ def update_tracker(target_detector, image):
     bboxes2draw = []
     face_bboxes = []
     current_ids = []
-    for value in list(outputs):
-        x1, y1, x2, y2, cls_, track_id = value
-        bboxes2draw.append((x1, y1, x2, y2, cls_, track_id))
-        current_ids.append(track_id)
-        if cls_ in ["car", "truck", "person"]:
-            if track_id not in target_detector.faceTracker:
-                target_detector.faceTracker[track_id] = 0
-                face = image[y1:y2, x1:x2]
-                new_faces.append((face, track_id))
-            face_bboxes.append((x1, y1, x2, y2))
+    if len(outputs):
+        for value in list(outputs):
+            x1, y1, x2, y2, cls_, track_id = value
+            bboxes2draw.append((x1, y1, x2, y2, cls_, track_id))
+            current_ids.append(track_id)
+            if cls_ in ["car", "truck", "person"]:
+                if track_id not in target_detector.faceTracker:
+                    target_detector.faceTracker[track_id] = 0
+                    face = image[y1:y2, x1:x2]
+                    new_faces.append((face, track_id))
+                face_bboxes.append((x1, y1, x2, y2))
 
     ids2delete = []
     for history_id in target_detector.faceTracker:
