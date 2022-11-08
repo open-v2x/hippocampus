@@ -72,7 +72,7 @@ jobs:
             cameras=(`cat default.yml | grep "camera_id" | awk '{print $3}'`)
             rtsp_urls=(`cat default.yml | grep "rtsp" | awk '{print $3}'`)
           
-            containers=(ffmpeg ffmpeg-1 ffmpeg-2 ffmpeg-3 rtsp-simple-server rtsp-simple-server-1 rtsp-simple-server-2 rtsp-simple-server-3 lalserver)
+            containers=(rtsp_simulator lalserver)
             to_delete=(${containers[@]}  ${container_names[@]})
             for i in ${to_delete[@]}; do
               docker stop $i 2>/dev/null || true
@@ -83,13 +83,8 @@ jobs:
           
             docker run -d -p 1935:1935 -p 7001:8080 --restart=always --name=lalserver q191201771/lal /lal/bin/lalserver -c /lal/conf/lalserver.conf.json
 
-            docker run -d -e RTSP_PROTOCOLS=tcp -p 8554:8554 --restart=always --name=rtsp-simple-server-1 aler9/rtsp-simple-server
-            docker run -d -e RTSP_PROTOCOLS=tcp -p 8555:8554 --restart=always --name=rtsp-simple-server-2 aler9/rtsp-simple-server
-            docker run -d -e RTSP_PROTOCOLS=tcp -p 8556:8554 --restart=always --name=rtsp-simple-server-3 aler9/rtsp-simple-server
-            # jrottenberg/ffmpeg:3.4-rockylinux8
-            docker run -d -v ~/Videos/test.mp4:/tmp/workdir/test.mp4 --restart=always --name=ffmpeg-1 --net=host registry.cn-shanghai.aliyuncs.com/openv2x/ffmpeg:3.4-rockylinux8 -re -stream_loop -1 -i /tmp/workdir/test.mp4 -r 25 -c:v libx264 -s 1920x1080 -rtsp_transport tcp -f rtsp rtsp://localhost:8554/mystream
-            docker run -d -v ~/Videos/test.mp4:/tmp/workdir/test.mp4 --restart=always --name=ffmpeg-2 --net=host registry.cn-shanghai.aliyuncs.com/openv2x/ffmpeg:3.4-rockylinux8 -re -stream_loop -1 -i /tmp/workdir/test.mp4 -r 25 -c:v libx264 -s 1920x1080 -rtsp_transport tcp -f rtsp rtsp://localhost:8555/mystream
-            docker run -d -v ~/Videos/test.mp4:/tmp/workdir/test.mp4 --restart=always --name=ffmpeg-3 --net=host registry.cn-shanghai.aliyuncs.com/openv2x/ffmpeg:3.4-rockylinux8 -re -stream_loop -1 -i /tmp/workdir/test.mp4 -r 25 -c:v libx264 -s 1920x1080 -rtsp_transport tcp -f rtsp rtsp://localhost:8556/mystream
+            # openv2x/rtsp_simulator:latest
+            docker run -d -e SOURCE_URL=/tmp/workdir/test.mp4 -v ~/Videos/test.mp4:/tmp/workdir/test.mp4 --restart=always --name=rtsp_simulator --net=host openv2x/rtsp_simulator:latest
 
             docker pull registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus-base:latest
             docker pull registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
