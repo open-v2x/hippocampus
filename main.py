@@ -1,19 +1,29 @@
 import os
+import queue
 import subprocess
+import threading
 
 import cv2
 
 from detector import Detector
 from tracker import plot_bboxes
 
+q = queue.Queue()
 
-def main():
 
-    det = Detector()
+def Receive():
+    print("start Reveive")
     cap = cv2.VideoCapture(os.getenv("rtsp"))
-    size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-    sizeStr = str(size[0]) + "x" + str(size[1])
-    fps = str(cap.get(cv2.CAP_PROP_FPS))
+    ret, frame = cap.read()
+    q.put(frame)
+    while ret:
+        ret, frame = cap.read()
+        q.put(frame)
+
+
+def Stream():
+    print("Start Streaming")
+    det = Detector()
     rtmp = "rtmp://localhost:1935/live/" + os.getenv("camera_id") + ".flv"
     command = [
         "ffmpeg",
@@ -25,9 +35,9 @@ def main():
         "-pix_fmt",
         "bgr24",
         "-s",
-        sizeStr,
+        "1920x1080",
         "-r",
-        fps,
+        "25",
         "-i",
         "-",
         "-c:v",
@@ -46,25 +56,25 @@ def main():
     count = 5
     bboxes = []
     while True:
-        ret, im = cap.read()
-        if not ret:
-            break
-        if i == 0:
-            bboxes.clear()
-            result = det.feedCap(im)
-            frame = result["frame"]
-            if result["bboxes2draw"]:
-                bboxes.append(result["bboxes2draw"])
-        else:
-            if bboxes:
-                frame = plot_bboxes(im, bboxes[0])
+        if not q.empty():
+            im = q.get()
+            if i == 0:
+                bboxes.clear()
+                result = det.feedCap(im)
+                frame = result["frame"]
+                if result["bboxes2draw"]:
+                    bboxes.append(result["bboxes2draw"])
             else:
-                frame = im
-        pipe.stdin.write(frame.tobytes())
-        i = (i + 1) % count
-
-    cap.release()
+                if bboxes:
+                    frame = plot_bboxes(im, bboxes[0])
+                else:
+                    frame = im
+            pipe.stdin.write(frame.tobytes())
+            i = (i + 1) % count
 
 
 if __name__ == "__main__":
-    main()
+    p1 = threading.Thread(target=Receive)
+    p2 = threading.Thread(target=Stream)
+    p1.start()
+    p2.start()
