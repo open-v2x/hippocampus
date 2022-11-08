@@ -1,53 +1,74 @@
 <mxfile host="65bd71144e">
     <diagram id="EBbinweba5JJ5TBh51er" name="Page-1">
-        <mxGraphModel dx="898" dy="530" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="769" dy="530" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="16" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="2" target="5">
+                <mxCell id="10" value="" style="edgeStyle=none;html=1;strokeColor=#33FFFF;" parent="1" source="3" target="4" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="2" value="ffmpeg推送rtmp" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="330" y="100" width="120" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="10" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="3" target="4">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="3" value="rtsp流" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="3" value="摄像头" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="30" y="100" width="80" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="13" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="4" target="2">
+                <mxCell id="22" value="" style="edgeStyle=none;html=1;strokeColor=#33FFFF;" edge="1" parent="1" source="4" target="5">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="4" value="算法处理" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="4" value="hippocampus" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="160" y="100" width="90" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="15" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="5" target="6">
+                <mxCell id="15" value="" style="edgeStyle=none;html=1;strokeColor=#33FFFF;" parent="1" source="5" target="6" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="5" value="lalserver" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="510" y="160" width="120" height="60" as="geometry"/>
+                <mxCell id="5" value="lalserver" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="370" y="210" width="70" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="6" value="Browser" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="690" y="160" width="120" height="60" as="geometry"/>
+                <mxCell id="6" value="Browser" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="560" y="210" width="70" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="11" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="7" target="8">
+                <mxCell id="11" value="" style="edgeStyle=none;html=1;strokeColor=#33FFFF;" parent="1" source="7" target="8" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="7" value="rtsp流" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="7" value="摄像头" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="30" y="210" width="80" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="12" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="8" target="9">
+                <mxCell id="23" value="" style="edgeStyle=none;html=1;strokeColor=#33FFFF;" edge="1" parent="1" source="8" target="5">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="8" value="算法处理" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="8" value="hippocampus" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="160" y="210" width="90" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="14" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="9" target="5">
+                <mxCell id="24" value="&lt;font color=&quot;#33ffff&quot;&gt;rtsp流&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="110" y="80" width="50" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="25" value="&lt;font color=&quot;#33ffff&quot;&gt;rtsp流&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="110" y="300" width="50" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="28" value="" style="edgeStyle=none;html=1;fontColor=#33FFFF;strokeColor=#33FFFF;" edge="1" parent="1" source="26" target="27">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="9" value="ffmpeg推送rtmp" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="330" y="210" width="120" height="60" as="geometry"/>
+                <mxCell id="26" value="摄像头" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="30" y="320" width="80" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="43" style="edgeStyle=none;html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;fontColor=#33FFFF;strokeColor=#33FFFF;" edge="1" parent="1" source="27" target="5">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="27" value="hippocampus" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="160" y="320" width="90" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="31" value="&lt;font color=&quot;#33ffff&quot;&gt;rtsp流&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="110" y="200" width="50" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="38" value="rtmp流与ffmpeg" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontColor=#33FFFF;" vertex="1" parent="1">
+                    <mxGeometry x="270" y="130" width="100" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="39" value="rtmp流与ffmpeg" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontColor=#33FFFF;" vertex="1" parent="1">
+                    <mxGeometry x="260" y="210" width="100" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="40" value="http-flv" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontColor=#33FFFF;" vertex="1" parent="1">
+                    <mxGeometry x="470" y="200" width="50" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="44" value="rtmp流与ffmpeg" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontColor=#33FFFF;" vertex="1" parent="1">
+                    <mxGeometry x="270" y="320" width="100" height="20" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>

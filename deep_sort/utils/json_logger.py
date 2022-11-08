@@ -99,7 +99,7 @@ class Frame(BaseJsonLogger):
         frame_id (int):
     """
 
-    def __init__(self, frame_id: int, timestamp: float = None):
+    def __init__(self, frame_id: int, timestamp: float = None):  # type:ignore
         self.frame_id = frame_id
         self.timestamp = timestamp
         self.bboxes = []  # type:ignore
@@ -183,7 +183,7 @@ class BboxToJsonLogger(BaseJsonLogger):
         """
         return frame_id in self.frames.keys()
 
-    def add_frame(self, frame_id: int, timestamp: float = None) -> None:
+    def add_frame(self, frame_id: int, timestamp: float = None) -> None:  # type:ignore
         """
         Args:
             frame_id (int):
@@ -280,10 +280,10 @@ class BboxToJsonLogger(BaseJsonLogger):
 
     def add_video_details(
         self,
-        frame_width: int = None,
-        frame_height: int = None,
-        frame_rate: int = None,
-        video_name: str = None,
+        frame_width: int = None,  # type:ignore
+        frame_height: int = None,  # type:ignore
+        frame_rate: int = None,  # type:ignore
+        video_name: str = None,  # type:ignore
     ):
         self.video_details["frame_width"] = frame_width
         self.video_details["frame_height"] = frame_height
