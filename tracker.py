@@ -71,10 +71,9 @@ def update_tracker(target_detector, image):
 
         outputs = deepsort.update(xywhs, confss, clss, image)
 
-    bboxes2draw = []
-    face_bboxes = []
-    current_ids = []
-    if len(outputs):
+        bboxes2draw = []
+        face_bboxes = []
+        current_ids = []
         for value in list(outputs):
             x1, y1, x2, y2, cls_, track_id = value
             bboxes2draw.append((x1, y1, x2, y2, cls_, track_id))
