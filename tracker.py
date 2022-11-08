@@ -85,16 +85,16 @@ def update_tracker(target_detector, image):
                     new_faces.append((face, track_id))
                 face_bboxes.append((x1, y1, x2, y2))
 
-    ids2delete = []
-    for history_id in target_detector.faceTracker:
-        if history_id not in current_ids:
-            target_detector.faceTracker[history_id] -= 1
-        if target_detector.faceTracker[history_id] < -5:
-            ids2delete.append(history_id)
+        ids2delete = []
+        for history_id in target_detector.faceTracker:
+            if history_id not in current_ids:
+                target_detector.faceTracker[history_id] -= 1
+            if target_detector.faceTracker[history_id] < -5:
+                ids2delete.append(history_id)
 
-    for ids in ids2delete:
-        target_detector.faceTracker.pop(ids)
-        # print('-[INFO] Delete track id:', ids)
+        for ids in ids2delete:
+            target_detector.faceTracker.pop(ids)
+            # print('-[INFO] Delete track id:', ids)
 
     image = plot_bboxes(image, bboxes2draw)
 
