@@ -10,7 +10,3 @@ Tracking (MOT)
 Design archetecture:
 
 ![](docs/images/engineering-design-drawing.svg)
-
-Workflow pipeline:
-
-![](docs/images/pipeline.svg)
