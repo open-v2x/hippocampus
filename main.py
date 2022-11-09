@@ -17,7 +17,7 @@ def Receive():
     cap = cv2.VideoCapture(os.getenv("rtsp"))
     cap.set(cv2.CAP_PROP_BUFFERSIZE, 2)
     fps = cap.get(cv2.CAP_PROP_FPS)
-    delay = 1.0 / fps
+    delay = 1.0 / (fps + 5)
     while cap.isOpened():
         _, frame = cap.read()
         q.put(frame)
