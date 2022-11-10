@@ -1,12 +1,12 @@
 cam_1:
   - container_name: hippocampus_1
   - camera_id: cam_1
-  - rtsp: rtsp://localhost:8554/mystream
+  - rtsp: rtsp://localhost:8554/1
 cam_2:
   - container_name: hippocampus_2
   - camera_id: cam_2
-  - rtsp: rtsp://localhost:8554/mystream
+  - rtsp: rtsp://localhost:8554/2
 cam_3:
   - container_name: hippocampus_3
   - camera_id: cam_3
-  - rtsp: rtsp://localhost:8554/mystream
+  - rtsp: rtsp://localhost:8554/3
