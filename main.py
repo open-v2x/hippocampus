@@ -21,7 +21,7 @@ def Receive():
     while cap.isOpened():
         _, frame = cap.read()
         deq.append(frame)
-    time.sleep(delay)
+        time.sleep(delay)
 
 
 def Stream():
