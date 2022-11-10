@@ -85,7 +85,7 @@ jobs:
 
             # openv2x/rtsp_simulator:latest
             for((i=0;i<${#cameras[@]};i++)); do
-              docker run -d -e SOURCE_URL=/tmp/workdir/test.mp4 -e STREAM_NAME=${i} -v ~/Videos/test.mp4:/tmp/workdir/test.mp4 --restart=always --name=rtsp_simulator${i} --net=host openv2x/rtsp_simulator:latest
+              docker run -d -e SOURCE_URL=/tmp/workdir/test.mp4 -e STREAM_NAME=i -v ~/Videos/test.mp4:/tmp/workdir/test.mp4 --restart=always --name=rtsp_simulator${i} --net=host openv2x/rtsp_simulator:latest
             done
 
             docker pull registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus-base:latest
