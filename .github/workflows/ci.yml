@@ -84,9 +84,7 @@ jobs:
             docker run -d -p 1935:1935 -p 7001:8080 --restart=always --name=lalserver q191201771/lal /lal/bin/lalserver -c /lal/conf/lalserver.conf.json
 
             # openv2x/rtsp_simulator:latest
-            for((i=0;i<${#cameras[@]};i++)); do
-              docker run -d -e SOURCE_URL=/tmp/workdir/test.mp4 -e STREAM_NAME=i -v ~/Videos/test.mp4:/tmp/workdir/test.mp4 --restart=always --name=rtsp_simulator --net=host openv2x/rtsp_simulator:latest
-            done
+            docker run -d -e SOURCE_URL=/tmp/workdir/test.mp4 -v ~/Videos/test.mp4:/tmp/workdir/test.mp4 --restart=always --name=rtsp_simulator --net=host openv2x/rtsp_simulator:latest
 
             docker pull registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus-base:latest
             docker pull registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
