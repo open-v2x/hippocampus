@@ -9,7 +9,7 @@ import cv2
 from detector import Detector
 from tracker import plot_bboxes
 
-deq = deque(maxlen=5)
+deq = deque(maxlen=50)
 
 
 def Receive():
@@ -17,11 +17,12 @@ def Receive():
     cap = cv2.VideoCapture(os.getenv("rtsp"))
     cap.set(cv2.CAP_PROP_BUFFERSIZE, 2)
     fps = cap.get(cv2.CAP_PROP_FPS)
-    delay = 1.0 / fps
+    delay = 50 / fps
     while cap.isOpened():
         _, frame = cap.read()
         deq.append(frame)
-        time.sleep(delay)
+        if len(deq) >= 50:
+            time.sleep(delay)
 
 
 def Stream():
