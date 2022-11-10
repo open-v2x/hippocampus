@@ -1,7 +1,7 @@
 import os
 import subprocess
 import threading
-import time  # noqa
+import time
 from collections import deque
 
 import cv2
@@ -9,20 +9,20 @@ import cv2
 from detector import Detector
 from tracker import plot_bboxes
 
-deq = deque()
+deq = deque(maxlen=50)
 
 
 def Receive():
     print("start Reveive ...")
     cap = cv2.VideoCapture(os.getenv("rtsp"))
     cap.set(cv2.CAP_PROP_BUFFERSIZE, 2)
-    # fps = cap.get(cv2.CAP_PROP_FPS)
-    # delay = 50 / fps
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    delay = 50 / fps
     while cap.isOpened():
         _, frame = cap.read()
         deq.append(frame)
-        # if len(deq) >= 50:
-        #     time.sleep(delay)
+        if len(deq) >= 50:
+            time.sleep(delay)
 
 
 def Stream():
