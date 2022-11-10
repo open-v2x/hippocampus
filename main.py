@@ -1,15 +1,15 @@
 import os
-import queue
 import subprocess
 import threading
 import time
+from collections import deque
 
 import cv2
 
 from detector import Detector
 from tracker import plot_bboxes
 
-q = queue.Queue()
+deq = deque(maxlen=5)
 
 
 def Receive():
@@ -17,10 +17,10 @@ def Receive():
     cap = cv2.VideoCapture(os.getenv("rtsp"))
     cap.set(cv2.CAP_PROP_BUFFERSIZE, 2)
     fps = cap.get(cv2.CAP_PROP_FPS)
-    delay = 1.0 / (fps + 5)
+    delay = 1.0 / fps
     while cap.isOpened():
         _, frame = cap.read()
-        q.put(frame)
+        deq.append(frame)
     time.sleep(delay)
 
 
@@ -47,8 +47,6 @@ def Stream():
         "libx264",
         "-pix_fmt",
         "yuv420p",
-        "-bufsize",
-        "64M",
         "-preset",
         "ultrafast",
         "-f",
@@ -61,8 +59,8 @@ def Stream():
     count = 5
     bboxes = []
     while True:
-        if not q.empty():
-            im = q.get()
+        if deq:
+            im = deq.popleft()
             if i == 0:
                 bboxes.clear()
                 result = det.feedCap(im)
