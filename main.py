@@ -1,7 +1,6 @@
 import os
 import subprocess
 import threading
-import time
 from collections import deque
 
 import cv2
@@ -16,12 +15,9 @@ def Receive():
     print("start Reveive ...")
     cap = cv2.VideoCapture(os.getenv("rtsp"))
     cap.set(cv2.CAP_PROP_BUFFERSIZE, 2)
-    fps = cap.get(cv2.CAP_PROP_FPS)
-    delay = 1.0 / fps
     while cap.isOpened():
         _, frame = cap.read()
         deq.append(frame)
-    time.sleep(delay)
 
 
 def Stream():
@@ -47,6 +43,8 @@ def Stream():
         "libx264",
         "-pix_fmt",
         "yuv420p",
+        "-bufsize",
+        "64M",
         "-preset",
         "ultrafast",
         "-f",
