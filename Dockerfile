@@ -6,7 +6,8 @@ LABEL purpose="hippocampus"
 WORKDIR /home/hippocampus
 COPY . /home/hippocampus/
 
-RUN pip install -r /home/hippocampus/requirements.txt \
+RUN pip install --upgrade pip \
+    && pip install -r /home/hippocampus/requirements.txt \
     && cp /home/hippocampus/start.sh /usr/local/bin/start.sh \
     && mkdir -p /root/.config/Ultralytics/ \
     && cp /home/hippocampus/Arial.ttf /root/.config/Ultralytics/ \

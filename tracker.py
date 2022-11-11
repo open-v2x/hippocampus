@@ -1,5 +1,6 @@
 import cv2
 import torch
+from threadpoolctl import threadpool_limits
 
 from deep_sort.deep_sort.deep_sort import DeepSort
 from deep_sort.utils.parser import get_config
@@ -70,7 +71,8 @@ def update_tracker(target_detector, image):
         xywhs = torch.Tensor(bbox_xywh)
         confss = torch.Tensor(confs)
 
-        outputs = deepsort.update(xywhs, confss, clss, image)
+        with threadpool_limits(limits=1, user_api="blas"):
+            outputs = deepsort.update(xywhs, confss, clss, image)
 
         current_ids = []
         for value in list(outputs):
