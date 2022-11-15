@@ -1,6 +1,9 @@
+import datetime
 import os
 import subprocess
 import threading
+import torch
+import time
 from collections import deque
 
 import cv2
@@ -13,11 +16,14 @@ deq = deque(maxlen=5)
 
 def Receive():
     print("start Reveive ...")
-    cap = cv2.VideoCapture(os.getenv("rtsp"))
-    cap.set(cv2.CAP_PROP_BUFFERSIZE, 2)
-    while cap.isOpened():
-        _, frame = cap.read()
-        deq.append(frame)
+    while True:
+        cap = cv2.VideoCapture(os.getenv("rtsp"))
+        cap.set(cv2.CAP_PROP_BUFFERSIZE, 2)
+        while cap.isOpened():
+            _, frame = cap.read()
+            deq.append(frame)
+        print("[{} UTC] rtsp stream is closed, retry...".format(datetime.datetime.utcnow()))
+        time.sleep(1)
 
 
 def Stream():
@@ -56,6 +62,14 @@ def Stream():
     i = 1
     count = 5
     bboxes = []
+    if not torch.cuda.is_available():
+        while True:
+            if deq:
+                im = deq.popleft()
+                pipe.stdin.write(im.tobytes())
+            else:
+                time.sleep(1)
+                print("[{} UTC] dep is empty, retry...".format(datetime.datetime.utcnow()))
     while True:
         if deq:
             im = deq.popleft()
@@ -72,6 +86,9 @@ def Stream():
                     frame = im
             pipe.stdin.write(frame.tobytes())
             i = (i + 1) % count
+        else:
+            time.sleep(1)
+            print("[{} UTC] dep is empty, retry...".format(datetime.datetime.utcnow()))
 
 
 if __name__ == "__main__":
