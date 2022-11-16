@@ -11,7 +11,9 @@ import cv2
 from detector import Detector
 from tracker import plot_bboxes
 
-deq = deque(maxlen=5)
+deq = deque(maxlen=20)
+RECEIVE_SLEEP_INTERVAL_SECOND = 1
+PROCESS_SLEEP_INTERVAL_SECOND = 0.1
 
 
 def Receive():
@@ -20,10 +22,12 @@ def Receive():
         cap = cv2.VideoCapture(os.getenv("rtsp"))
         cap.set(cv2.CAP_PROP_BUFFERSIZE, 2)
         while cap.isOpened():
-            _, frame = cap.read()
+            ret, frame = cap.read()
+            if not ret:
+                break
             deq.append(frame)
-        print("[{} UTC] rtsp stream is closed, retry...".format(datetime.datetime.utcnow()))
-        time.sleep(1)
+        print("[{} UTC] Can't read rtsp".format(datetime.datetime.utcnow()))
+        time.sleep(RECEIVE_SLEEP_INTERVAL_SECOND)
 
 
 def Stream():
@@ -68,8 +72,7 @@ def Stream():
                 im = deq.popleft()
                 pipe.stdin.write(im.tobytes())
             else:
-                time.sleep(1)
-                print("[{} UTC] dep is empty, retry...".format(datetime.datetime.utcnow()))
+                time.sleep(PROCESS_SLEEP_INTERVAL_SECOND)
     while True:
         if deq:
             im = deq.popleft()
@@ -87,12 +90,11 @@ def Stream():
             pipe.stdin.write(frame.tobytes())
             i = (i + 1) % count
         else:
-            time.sleep(1)
-            print("[{} UTC] dep is empty, retry...".format(datetime.datetime.utcnow()))
+            time.sleep(PROCESS_SLEEP_INTERVAL_SECOND)
 
 
 if __name__ == "__main__":
-    p1 = threading.Thread(target=Receive)
+    p1 = threading.Thread(target=Receive, daemon=True)
     p2 = threading.Thread(target=Stream)
     p1.start()
     p2.start()
