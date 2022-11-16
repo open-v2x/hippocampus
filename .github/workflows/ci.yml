@@ -92,3 +92,21 @@ jobs:
             for((i=0;i<${#cameras[@]};i++)); do
               nvidia-docker run -d --restart=always --name=${container_names[i]} -e camera_id=${cameras[i]} -e rtsp=${rtsp_urls[i]} --gpus all --net=host registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
             done
+
+  aio-master-ssh:
+    needs: acr
+    runs-on: ubuntu-latest
+    steps:
+      - name: apply to master aio env
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AIO_MASTER_HOST }}
+          username: ${{ secrets.AIO_MASTER_USERNAME }}
+          key: ${{ secrets.AIO_MASTER_KEY }}
+          port: ${{ secrets.AIO_MASTER_PORT }}
+          script: |
+            set -e
+            rm -rf openv2x-aio-master.tar.gz && wget https://openv2x.oss-ap-southeast-1.aliyuncs.com/deploy/master/openv2x-aio-master.tar.gz
+            rm -rf src && tar zxvf openv2x-aio-master.tar.gz
+            cd src
+            sh install.sh
