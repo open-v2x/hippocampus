@@ -118,11 +118,13 @@ docker run -d -p 1935:1935 -p 8088:8080 --name=lalserver q191201771/lal /lal/bin
 # 方案 1
 # docker run -v ~/Videos/test.mp4:/test.mp4 --rm -p 8554:8554 -d --name=gst-rtsp-launch steabert/gst-rtsp-launch "filesrc location=/test.mp4 ! decodebin ! x264enc ! rtph264pay name=pay0 pt=96"
 # 方案 2
-docker run --rm -it -d -e RTSP_PROTOCOLS=tcp -p 8554:8554 -p 8888:8888 aler9/rtsp-simple-server
-docker run --restart always -d -v ~/videos/test.flv:/tmp/workdir/test.flv --name app_ffmpeg jrottenberg/ffmpeg -re -stream_loop -1 -i /tmp/workdir/test.flv -r 25 -c:v libx264 -s 1920x1080 -rtsp_transport tcp -f rtsp rtsp://172.17.0.1:8554/mystream
+# docker run --rm -it -d -e RTSP_PROTOCOLS=tcp -p 8554:8554 -p 8888:8888 aler9/rtsp-simple-server
+# docker run --restart always -d -v ~/videos/test.flv:/tmp/workdir/test.flv --name app_ffmpeg jrottenberg/ffmpeg -re -stream_loop -1 -i /tmp/workdir/test.flv -r 25 -c:v libx264 -s 1920x1080 -rtsp_transport tcp -f rtsp rtsp://172.17.0.1:8554/mystream
 # ffmpeg -re -stream_loop -1 -i ~/Videos/test.flv -r 25 -c:v libx264 -s 1920x1080 -rtsp_transport tcp -f rtsp rtsp://localhost:8554/mystream
 # 这里用了 test.flv，如果你的视频时 mp4 格式，可以直接用 mp4，但性能略差，连续播放也可能失败。可以用 https://www.aconvert.com/cn/video/mp4-to-flv/ 将 mp4 转换成 flv
-# test.flv 可以在这里下载：链接: https://pan.baidu.com/s/1c-9LFSkW033rgdQC7LtBgg 提取码: 1nvo
+# 方案三：
+docker run -d -e SOURCE_URL=/tmp/workdir/test.mp4 -v ~/Videos/test.mp4:/tmp/workdir/test.mp4 --restart=always --name=rtsp_simulator --net=host registry.cn-shanghai.aliyuncs.com/openv2x/rtsp_simulator:latest
+# test.flv和test.mp4 可以在这里下载：链接: https://pan.baidu.com/s/1suMwFqcewUGGEclSj5FZiw 提取码: m2m4
 ```
 
 至此，RTSP 流应该是可用的，可以用 VLC 测试一下，默认路径是：`rtsp://localhost:8554/mystream` 和
