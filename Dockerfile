@@ -1,5 +1,5 @@
 # FROM docker.io/library/python:3.9.12-slim-buster
-FROM docker.io/openv2x/hippocampus-base
+FROM docker.io/openv2x/hippocampus-base:beihai
 
 LABEL purpose="hippocampus"
 
