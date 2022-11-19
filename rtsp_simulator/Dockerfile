@@ -12,7 +12,7 @@ RUN go mod download
 RUN go build -o /go/bin/rtsp-simple-server .
 
 
-FROM jrottenberg/ffmpeg:4.0-alpine
+FROM bitr0t/ffmpeg-alpine:latest
 
 ENV SOURCE_URL ''
 ENV STREAM_NAME 'mystream'

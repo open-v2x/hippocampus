@@ -5,7 +5,4 @@ LABEL purpose="hippocampus-base"
 COPY ./requirements.txt requirements.txt
 
 RUN apt-get update \
-    && apt-get install -y wget curl ffmpeg vim procps\
-    && /usr/local/bin/python -m pip install --upgrade pip \
-    && pip install -r requirements.txt \
-    && rm -rf ~/.cache/pip
+    && apt-get install -y wget curl ffmpeg vim procps
