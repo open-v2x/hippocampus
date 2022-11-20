@@ -26,7 +26,7 @@ RUN apk --update add gettext bash
 COPY --from=BUILD /go/bin/rtsp-simple-server /bin/rtsp-simple-server
 
 ADD start.sh /
-ADD rtsp-simple-server.yml /
+ADD rtsp-simple-server.yml /config/
 
 ENTRYPOINT [ "/bin/bash" ]
 
