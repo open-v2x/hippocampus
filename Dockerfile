@@ -1,7 +1,15 @@
 # FROM docker.io/library/python:3.9.12-slim-buster
 FROM docker.io/openv2x/hippocampus-base
 
-LABEL purpose="hippocampus"
+ARG GIT_BRANCH
+ARG GIT_COMMIT
+ARG RELEASE_VERSION
+ARG REPO_URL
+
+LABEL hippocampus.build_branch=${GIT_BRANCH} \
+      hippocampus.build_commit=${GIT_COMMIT} \
+      hippocampus.release_version=${RELEASE_VERSION} \
+      hippocampus.repo_url=${REPO_URL}
 
 WORKDIR /home/hippocampus
 COPY . /home/hippocampus/
