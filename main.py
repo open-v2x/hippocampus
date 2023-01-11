@@ -2,11 +2,11 @@ import datetime
 import os
 import subprocess
 import threading
-import torch
 import time
 from collections import deque
 
 import cv2
+import torch
 
 from detector import Detector
 from tracker import plot_bboxes
