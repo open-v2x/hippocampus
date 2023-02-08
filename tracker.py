@@ -25,7 +25,7 @@ def plot_bboxes(image, bboxes, line_thickness=None):
     tl = (
         line_thickness or round(0.002 * (image.shape[0] + image.shape[1]) / 2) + 1
     )  # line/font thickness
-    for (x1, y1, x2, y2, cls_id, pos_id) in bboxes:
+    for x1, y1, x2, y2, cls_id, pos_id in bboxes:
         if cls_id in ["person"]:
             color = (0, 0, 255)
         else:
@@ -51,7 +51,6 @@ def plot_bboxes(image, bboxes, line_thickness=None):
 
 
 def update_tracker(target_detector, image):
-
     new_faces = []
     _, bboxes = target_detector.detect(image)
 
@@ -62,7 +61,6 @@ def update_tracker(target_detector, image):
     face_bboxes = []
     if len(bboxes):
         for x1, y1, x2, y2, cls_id, conf in bboxes:
-
             obj = [int((x1 + x2) / 2), int((y1 + y2) / 2), x2 - x1, y2 - y1]
             bbox_xywh.append(obj)
             confs.append(conf)

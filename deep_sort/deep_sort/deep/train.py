@@ -73,6 +73,7 @@ criterion = torch.nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(net.parameters(), args.lr, momentum=0.9, weight_decay=5e-4)
 best_acc = 0.0
 
+
 # train function for each epoch
 def train(epoch):
     print("\nEpoch : %d" % (epoch + 1))
