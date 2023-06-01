@@ -87,7 +87,7 @@ jobs:
             # openv2x/rtsp_simulator:columbia
             docker run -d -e SOURCE_URL=/tmp/workdir/test.mp4 -v ~/Videos/test.mp4:/tmp/workdir/test.mp4 --restart=always --name=rtsp_simulator --net=host openv2x/rtsp_simulator:columbia
 
-            docker pull registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus-base:columbia
+            docker pull registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus-base:latest
             docker pull registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:columbia
             for((i=0;i<${#cameras[@]};i++)); do
               nvidia-docker run -d --restart=always --name=${container_names[i]} -e camera_id=${cameras[i]} -e rtsp=${rtsp_urls[i]} --gpus all --net=host registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:columbia
