@@ -3,7 +3,7 @@ name: ci
 on:
   push:
     branches:
-      - master
+      - columbia
 
 jobs:
   docker:
@@ -26,7 +26,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: openv2x/hippocampus:latest
+          tags: openv2x/hippocampus:columbia
           build-args: |
             GIT_BRANCH=${{ github.ref_name }}
             REPO_URL=https://github.com/open-v2x/hippocampus
@@ -47,9 +47,9 @@ jobs:
             set -e
 
             (docker images | grep none | awk '{print $3}' | xargs -I{} docker rmi -f {}) || true
-            docker pull openv2x/hippocampus:latest
-            docker tag openv2x/hippocampus:latest registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
-            docker push registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
+            docker pull openv2x/hippocampus:columbia
+            docker tag openv2x/hippocampus:columbia registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:columbia
+            docker push registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:columbia
 
   ssh:
     needs: acr
@@ -67,8 +67,8 @@ jobs:
           
             rm -rf /tmp/config
             mkdir /tmp/config && cd /tmp/config
-            wget https://raw.githubusercontent.com/open-v2x/hippocampus/master/config/default.yml
-            wget https://raw.githubusercontent.com/open-v2x/hippocampus/master/config/lalserver.conf.json
+            wget https://raw.githubusercontent.com/open-v2x/hippocampus/columbia/config/default.yml
+            wget https://raw.githubusercontent.com/open-v2x/hippocampus/columbia/config/lalserver.conf.json
             container_names=(`cat default.yml | grep "container_name" | awk '{print $3}'`)
             cameras=(`cat default.yml | grep "camera_id" | awk '{print $3}'`)
             rtsp_urls=(`cat default.yml | grep "rtsp" | awk '{print $3}'`)
@@ -79,34 +79,34 @@ jobs:
               docker stop $i 2>/dev/null || true
               docker rm $i 2>/dev/null || true
             done
-            docker rmi registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest || true
+            docker rmi registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:columbia || true
             docker images | grep none | awk '{print $3}' | xargs -I{} docker rmi -f {}
           
             docker run -d -p 1935:1935 -p 7001:8080 --restart=always --name=lalserver -v /tmp/config/lalserver.conf.json:/lal/conf/lalserver.conf.json q191201771/lal /lal/bin/lalserver -c /lal/conf/lalserver.conf.json
 
-            # openv2x/rtsp_simulator:latest
-            docker run -d -e SOURCE_URL=/tmp/workdir/test.mp4 -v ~/Videos/test.mp4:/tmp/workdir/test.mp4 --restart=always --name=rtsp_simulator --net=host openv2x/rtsp_simulator:latest
+            # openv2x/rtsp_simulator:columbia
+            docker run -d -e SOURCE_URL=/tmp/workdir/test.mp4 -v ~/Videos/test.mp4:/tmp/workdir/test.mp4 --restart=always --name=rtsp_simulator --net=host openv2x/rtsp_simulator:columbia
 
-            docker pull registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus-base:latest
-            docker pull registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
+            docker pull registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus-base:columbia
+            docker pull registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:columbia
             for((i=0;i<${#cameras[@]};i++)); do
-              nvidia-docker run -d --restart=always --name=${container_names[i]} -e camera_id=${cameras[i]} -e rtsp=${rtsp_urls[i]} --gpus all --net=host registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:latest
+              nvidia-docker run -d --restart=always --name=${container_names[i]} -e camera_id=${cameras[i]} -e rtsp=${rtsp_urls[i]} --gpus all --net=host registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:columbia
             done
 
-  aio-master-ssh:
+  aio-columbia-ssh:
     needs: acr
     runs-on: ubuntu-latest
     steps:
-      - name: apply to master aio env
+      - name: apply to columbia aio env
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.AIO_MASTER_HOST }}
-          username: ${{ secrets.AIO_MASTER_USERNAME }}
-          key: ${{ secrets.AIO_MASTER_KEY }}
-          port: ${{ secrets.AIO_MASTER_PORT }}
+          host: ${{ secrets.AIO_ALBANY_HOST }}
+          username: ${{ secrets.AIO_ALBANY_USERNAME }}
+          key: ${{ secrets.AIO_ALBANY_KEY }}
+          port: ${{ secrets.AIO_ALBANY_PORT }}
           script: |
             set -e
-            rm -rf openv2x-aio-master.tar.gz && wget https://openv2x.oss-ap-southeast-1.aliyuncs.com/deploy/master/openv2x-aio-master.tar.gz
-            rm -rf src && tar zxvf openv2x-aio-master.tar.gz
+            rm -rf openv2x-aio-columbia.tar.gz && wget https://openv2x.oss-ap-southeast-1.aliyuncs.com/deploy/columbia/openv2x-aio-columbia.tar.gz
+            rm -rf src && tar zxvf openv2x-aio-columbia.tar.gz
             cd src
             sh install.sh

@@ -25,7 +25,6 @@ class Detector(baseDet):
         self.build_config()
 
     def init_model(self):
-
         self.weights = "weights/yolov5s.pt"
         self.device = "0" if torch.cuda.is_available() else "cpu"
         self.imgsz = [640, 640]
@@ -58,7 +57,6 @@ class Detector(baseDet):
         self.names = self.model.module.names if hasattr(self.model, "module") else names
 
     def preprocess(self, img):
-
         img0 = img.copy()
         img = letterbox(img0, self.imgsz, stride=self.stride, auto=False)[0]
         img = img.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
@@ -72,7 +70,6 @@ class Detector(baseDet):
         return img0, img
 
     def detect(self, im):
-
         im0, img = self.preprocess(im)
 
         pred = self.model(img, augment=False)
@@ -90,7 +87,6 @@ class Detector(baseDet):
 
         pred_boxes = []
         for det in pred:
-
             if det is not None and len(det):
                 det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
 
