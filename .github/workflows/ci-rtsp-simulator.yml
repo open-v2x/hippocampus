@@ -3,7 +3,7 @@ name: ci-rtsp-simulator
 on:
   push:
     branches:
-      - master
+      - columbia
 
 jobs:
   docker:
@@ -27,7 +27,7 @@ jobs:
           file: rtsp_simulator/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: openv2x/rtsp_simulator:latest
+          tags: openv2x/rtsp_simulator:columbia
           build-args: |
             GIT_BRANCH=${{ github.ref_name }}
             REPO_URL=https://github.com/open-v2x/hippocampus
@@ -48,6 +48,6 @@ jobs:
             set -e
 
             (docker images | grep none | awk '{print $3}' | xargs -I{} docker rmi -f {}) || true
-            docker pull openv2x/rtsp_simulator:latest
-            docker tag openv2x/rtsp_simulator:latest registry.cn-shanghai.aliyuncs.com/openv2x/rtsp_simulator:latest
-            docker push registry.cn-shanghai.aliyuncs.com/openv2x/rtsp_simulator:latest
+            docker pull openv2x/rtsp_simulator:columbia
+            docker tag openv2x/rtsp_simulator:columbia registry.cn-shanghai.aliyuncs.com/openv2x/rtsp_simulator:columbia
+            docker push registry.cn-shanghai.aliyuncs.com/openv2x/rtsp_simulator:columbia
