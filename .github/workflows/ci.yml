@@ -1,112 +1,17 @@
 name: ci
 
 on:
-  push:
+  pull_request:
     branches:
       - columbia
 
 jobs:
-  docker:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Login to DockerHub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: openv2x/hippocampus:columbia
-          build-args: |
-            GIT_BRANCH=${{ github.ref_name }}
-            REPO_URL=https://github.com/open-v2x/hippocampus
-            GIT_COMMIT=${{ github.sha }}
-
-  acr:
-    needs: docker
-    runs-on: ubuntu-latest
-    steps:
-      - name: sync image to ACR
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.FQ_HOST }}
-          username: ${{ secrets.FQ_USERNAME }}
-          key: ${{ secrets.FQ_KEY }}
-          port: ${{ secrets.FQ_PORT }}
-          script: |
-            set -e
-
-            (docker images | grep none | awk '{print $3}' | xargs -I{} docker rmi -f {}) || true
-            docker pull openv2x/hippocampus:columbia
-            docker tag openv2x/hippocampus:columbia registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:columbia
-            docker push registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:columbia
-
-  ssh:
-    needs: acr
-    runs-on: ubuntu-latest
-    steps:
-      - name: apply to cicd environment
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.LAB_HOST }}
-          username: ${{ secrets.LAB_USERNAME }}
-          password: ${{ secrets.LAB_PASSWORD }}
-          port: ${{ secrets.LAB_PORT }}
-          script: |
-            set -e
-          
-            rm -rf /tmp/config
-            mkdir /tmp/config && cd /tmp/config
-            wget https://raw.githubusercontent.com/open-v2x/hippocampus/columbia/config/default.yml
-            wget https://raw.githubusercontent.com/open-v2x/hippocampus/columbia/config/lalserver.conf.json
-            container_names=(`cat default.yml | grep "container_name" | awk '{print $3}'`)
-            cameras=(`cat default.yml | grep "camera_id" | awk '{print $3}'`)
-            rtsp_urls=(`cat default.yml | grep "rtsp" | awk '{print $3}'`)
-          
-            containers=(rtsp_simulator lalserver)
-            to_delete=(${containers[@]}  ${container_names[@]})
-            for i in ${to_delete[@]}; do
-              docker stop $i 2>/dev/null || true
-              docker rm $i 2>/dev/null || true
-            done
-            docker rmi registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:columbia || true
-            docker images | grep none | awk '{print $3}' | xargs -I{} docker rmi -f {}
-          
-            docker run -d -p 1935:1935 -p 7001:8080 --restart=always --name=lalserver -v /tmp/config/lalserver.conf.json:/lal/conf/lalserver.conf.json q191201771/lal /lal/bin/lalserver -c /lal/conf/lalserver.conf.json
-
-            # openv2x/rtsp_simulator:columbia
-            docker run -d -e SOURCE_URL=/tmp/workdir/test.mp4 -v ~/Videos/test.mp4:/tmp/workdir/test.mp4 --restart=always --name=rtsp_simulator --net=host openv2x/rtsp_simulator:columbia
-
-            docker pull registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus-base:latest
-            docker pull registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:columbia
-            for((i=0;i<${#cameras[@]};i++)); do
-              nvidia-docker run -d --restart=always --name=${container_names[i]} -e camera_id=${cameras[i]} -e rtsp=${rtsp_urls[i]} --gpus all --net=host registry.cn-shanghai.aliyuncs.com/openv2x/hippocampus:columbia
-            done
-
   aio-columbia-ssh:
-    needs: acr
     runs-on: ubuntu-latest
     steps:
       - name: apply to columbia aio env
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.AIO_ALBANY_HOST }}
-          username: ${{ secrets.AIO_ALBANY_USERNAME }}
-          key: ${{ secrets.AIO_ALBANY_KEY }}
-          port: ${{ secrets.AIO_ALBANY_PORT }}
-          script: |
-            set -e
-            rm -rf openv2x-aio-columbia.tar.gz && wget https://openv2x.oss-ap-southeast-1.aliyuncs.com/deploy/columbia/openv2x-aio-columbia.tar.gz
-            rm -rf src && tar zxvf openv2x-aio-columbia.tar.gz
+        run: |
+            rm -rf openv2x-aio-master.tar.gz && wget https://openv2x.oss-ap-southeast-1.aliyuncs.com/deploy/master/openv2x-aio-master.tar.gz
+            rm -rf src && tar zxvf openv2x-aio-master.tar.gz
             cd src
-            bash install.sh
+            ./install.sh
