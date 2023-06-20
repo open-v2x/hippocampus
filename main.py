@@ -15,6 +15,23 @@ deq = deque(maxlen=20)
 RECEIVE_SLEEP_INTERVAL_SECOND = 1
 PROCESS_SLEEP_INTERVAL_SECOND = 0.1
 
+cap = cv2.VideoCapture(os.getenv("rtsp"))
+
+# 检查视频流是否成功打开
+if not cap.isOpened():
+    print("无法打开视频流")
+    exit()
+
+# 获取视频的宽度和高度
+width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+res_ratio = f"{width}x{height}"
+
+
+# 释放资源
+cap.release()
+cv2.destroyAllWindows()
+
 
 def Receive():
     print("start Reveive ...")
@@ -44,7 +61,7 @@ def Stream():
         "-pix_fmt",
         "bgr24",
         "-s",
-        "1920x1080",
+        res_ratio,
         "-r",
         "25",
         "-i",
