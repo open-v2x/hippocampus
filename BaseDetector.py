@@ -5,13 +5,11 @@ from tracker import update_tracker
 
 class baseDet(object):
     def __init__(self):
-
         self.img_size = 640
         self.threshold = 0.3
         self.stride = 1
 
     def build_config(self):
-
         self.faceTracker = {}
         self.faceClasses = {}
         self.faceLocation1 = {}
@@ -23,7 +21,6 @@ class baseDet(object):
         self.font = cv2.FONT_HERSHEY_SIMPLEX
 
     def feedCap(self, im):
-
         retDict = {"frame": None, "faces": None, "list_of_ids": None, "face_bboxes": []}
         self.frameCounter += 1
 
